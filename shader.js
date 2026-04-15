@@ -7,7 +7,8 @@
   var canvas = document.getElementById('shader-bg');
   if (!canvas) return;
 
-  var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  var glOpts = { preserveDrawingBuffer: true, alpha: false, antialias: false };
+  var gl = canvas.getContext('webgl', glOpts) || canvas.getContext('experimental-webgl', glOpts);
   if (!gl) return;
 
   // Hide CSS gradient mesh fallback
