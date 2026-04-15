@@ -320,7 +320,7 @@
 
     .hero h1 em {
       font-style: normal;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--accent);
     }
 
@@ -433,7 +433,7 @@
 
     .beliefs .beliefs-pivot .highlight {
       color: var(--accent);
-      font-weight: 600;
+      font-weight: 500;
     }
 
     /* Final declarations — stacked, bold, centered, like manifesto demands */
@@ -454,7 +454,7 @@
     .beliefs .beliefs-demands p:last-child {
       font-size: clamp(1.3rem, 2.5vw, 1.55rem);
       color: var(--text);
-      font-weight: 600;
+      font-weight: 500;
       margin-top: 8px;
     }
 
@@ -558,7 +558,7 @@
     .urgency .window {
       font-family: var(--serif);
       font-size: clamp(1.3rem, 2.5vw, 1.6rem);
-      font-weight: 600;
+      font-weight: 500;
       color: var(--text);
       margin-top: 12px;
     }
@@ -653,6 +653,463 @@
       color: var(--dim);
       text-decoration: underline;
       text-underline-offset: 3px;
+    }
+
+    /* ===== MEMORY LOCK-IN REVEAL ===== */
+    .memory-reveal {
+      padding: 60px 0 100px;
+      position: relative;
+    }
+
+    .mr-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .mr-opener {
+      font-family: var(--serif);
+      font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+      font-style: italic;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    /* Chat input simulation */
+    .mr-chat {
+      width: 100%;
+      max-width: 680px;
+      margin-bottom: 64px;
+    }
+
+    .mr-chat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .mr-chat-messages {
+      padding: 20px 24px 8px;
+      min-height: 56px;
+    }
+
+    .mr-msg-area {
+      font-family: var(--sans);
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text);
+      position: relative;
+      min-height: 1.6em;
+    }
+
+    .mr-msg-area .mr-highlight {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-radius: 2px;
+      padding: 0 2px;
+      position: relative;
+    }
+
+    .mr-msg-area .mr-label {
+      position: absolute;
+      bottom: calc(100% + 4px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      font-weight: 400;
+      color: var(--accent);
+      background: var(--surface);
+      border: 1px solid rgba(232, 101, 74, 0.3);
+      border-radius: 4px;
+      padding: 2px 8px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    [data-theme="light"] .mr-msg-area .mr-label {
+      border-color: rgba(181, 57, 33, 0.3);
+    }
+
+    .mr-msg-area .mr-label.visible {
+      opacity: 1;
+    }
+
+    .mr-msg-area .mr-label::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 4px;
+      background: var(--accent);
+      opacity: 0.3;
+    }
+
+    .mr-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: var(--accent);
+      vertical-align: text-bottom;
+      animation: mrBlink 1s step-end infinite;
+    }
+
+    @keyframes mrBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .mr-chat-bar {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px 12px;
+      gap: 8px;
+    }
+
+    .mr-attach,
+    .mr-send {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      cursor: default;
+      transition: background 0.2s;
+    }
+
+    .mr-attach {
+      background: transparent;
+      color: var(--dim);
+    }
+
+    .mr-attach svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .mr-placeholder {
+      flex: 1;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      color: var(--dim);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .mr-placeholder.visible {
+      opacity: 1;
+    }
+
+    .mr-send {
+      background: var(--accent);
+      color: #fff;
+      opacity: 0.4;
+      transition: opacity 0.3s;
+    }
+
+    .mr-send.active {
+      opacity: 1;
+    }
+
+    .mr-send svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Fragment stream */
+    .mr-stream {
+      width: 100%;
+      max-width: 400px;
+      height: 280px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .mr-pill {
+      position: absolute;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      background: var(--surface);
+      border: 1px solid rgba(232, 101, 74, 0.25);
+      border-radius: 4px;
+      padding: 3px 10px;
+      white-space: nowrap;
+      box-shadow: 0 0 12px var(--accent-glow);
+      opacity: 0;
+      animation: mrDrift 4s ease-in forwards;
+      pointer-events: none;
+    }
+
+    [data-theme="light"] .mr-pill {
+      border-color: rgba(181, 57, 33, 0.25);
+    }
+
+    @keyframes mrDrift {
+      0%   { opacity: 0; transform: translateY(0); }
+      10%  { opacity: 0.9; }
+      80%  { opacity: 0.6; }
+      100% { opacity: 0; transform: translateY(260px); }
+    }
+
+    /* Fork */
+    .mr-fork {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 680px;
+      margin-bottom: 40px;
+    }
+
+    .mr-fork-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .mr-fork-chevron {
+      width: 20px;
+      height: 20px;
+      color: var(--dim);
+    }
+
+    /* Split layout */
+    .mr-split {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      max-width: 680px;
+      margin-bottom: 80px;
+      align-items: flex-start;
+    }
+
+    /* Vault */
+    .mr-vault {
+      flex: 7;
+      border-radius: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      animation: mrPulseGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes mrPulseGlow {
+      0%, 100% { box-shadow: 0 0 0px transparent; }
+      50%      { box-shadow: 0 0 30px var(--accent-glow); }
+    }
+
+    .mr-vault-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mr-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mr-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .mr-dots-spacer {
+      width: 44px;
+    }
+
+    .mr-vault-title {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--dim);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .mr-lock-sm {
+      width: 12px;
+      height: 12px;
+    }
+
+    .mr-vault-body {
+      position: relative;
+      padding: 20px 16px;
+      min-height: 180px;
+    }
+
+    .mr-vault-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      line-height: 1;
+    }
+
+    .mr-vpill {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--accent);
+      background: var(--surface);
+      border: 1px solid rgba(232, 101, 74, 0.2);
+      border-radius: 3px;
+      padding: 3px 8px;
+      white-space: nowrap;
+      transform: rotate(var(--r, 0deg));
+      opacity: 0.8;
+    }
+
+    [data-theme="light"] .mr-vpill {
+      border-color: rgba(181, 57, 33, 0.2);
+    }
+
+    .mr-vault-frost {
+      position: absolute;
+      inset: 0;
+      background: var(--surface);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .mr-lock-lg {
+      width: 40px;
+      height: 40px;
+      color: var(--dim);
+    }
+
+    .mr-vault-frost span {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--dim);
+      letter-spacing: 0.08em;
+    }
+
+    .mr-vault-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--dim);
+      letter-spacing: 0.03em;
+    }
+
+    .mr-counter {
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Export card */
+    .mr-export {
+      flex: 3;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .mr-export-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--dim);
+      letter-spacing: 0.05em;
+    }
+
+    .mr-file-icon {
+      width: 12px;
+      height: 12px;
+    }
+
+    .mr-export-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mr-export-body code {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      background: none;
+      border: none;
+      padding: 0;
+      line-height: 1.6;
+    }
+
+    .mr-export-footer {
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--dim);
+      letter-spacing: 0.03em;
+    }
+
+    /* Punchline */
+    .mr-punchline {
+      font-family: var(--serif);
+      font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+      font-style: italic;
+      color: var(--text);
+      text-align: center;
+      max-width: 520px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .mr-split {
+        flex-direction: column;
+      }
+
+      .mr-vault {
+        flex: none;
+        width: 100%;
+      }
+
+      .mr-export {
+        flex: none;
+        width: 100%;
+      }
+
+      .mr-chat-messages {
+        padding: 16px 18px 6px;
+      }
+
+      .mr-msg-area {
+        font-size: 0.9rem;
+      }
+
+      .mr-stream {
+        max-width: 280px;
+      }
     }
 
     /* ===== SCROLL REVEAL ===== */
