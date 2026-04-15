@@ -4,7 +4,7 @@ A map of projects, standards, regulations, and organizations working on AI memor
 
 *Last updated: April 2026.*
 
-**See also:** [The Manifesto](manifest.md) | [Terminology](terminology.md) | [Evidence](evidence.md)
+**See also:** [The Manifesto](../MANIFESTO.md) | [Terminology](terminology.md) | [Evidence](evidence.md)
 
 ---
 

@@ -35,7 +35,7 @@ All notable changes to The AI Memory Manifesto will be documented in this file.
 
 ### Proofread, cross-check, and validation fixes
 
-- **Distinguishability reconciled**: Settled on 5 canonical memory categories (user-stated facts, user preferences and instructions, system summaries, model inferences, contextual state) — applied consistently across `manifest.md` Right 4, Distinguishability principle, and `terminology.md` definition
+- **Distinguishability reconciled**: Settled on 5 canonical memory categories (user-stated facts, user preferences and instructions, system summaries, model inferences, contextual state) — applied consistently across `MANIFESTO.md` Right 4, Distinguishability principle, and `terminology.md` definition
 - **Undefined term removed**: "temporary goals" replaced with "contextual state" (now defined)
 - **Agent definition added** to `terminology.md` under Operational Terms
 - **Contributing link added** to manifesto's "Join us" section

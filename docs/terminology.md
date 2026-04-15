@@ -2,7 +2,7 @@
 
 A shared vocabulary for AI memory governance. These definitions are used throughout the manifesto and related documents.
 
-**See also:** [The Manifesto](manifest.md) | [Evidence](evidence.md) | [Landscape](landscape.md)
+**See also:** [The Manifesto](../MANIFESTO.md) | [Evidence](evidence.md) | [Landscape](landscape.md)
 
 ---
 

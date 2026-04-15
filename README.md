@@ -8,13 +8,13 @@ AI systems are beginning to remember us. They remember our preferences, our goal
 
 This manifesto argues that AI memory is a distinct category of data that deserves its own rights, standards, and protections. It defines what AI memory is, names the threats it creates, enumerates sixteen rights that must govern it, and calls for both the technical standards and the political will to make those rights real.
 
-**[Read the full manifesto](docs/manifest.md)**
+**[Read the full manifesto](MANIFESTO.md)**
 
 ## What's in this repository
 
 | Document | Description |
 |----------|-------------|
-| **[The Manifesto](docs/manifest.md)** | The core document: definitions, rights, principles, and a technical agenda |
+| **[The Manifesto](MANIFESTO.md)** | The core document: definitions, rights, principles, and a technical agenda |
 | **[Terminology](docs/terminology.md)** | Shared vocabulary for AI memory governance, with definitions and academic references |
 | **[Evidence](docs/evidence.md)** | Documented facts about how major AI providers accumulate, store, and reuse user memory |
 | **[Landscape](docs/landscape.md)** | Map of initiatives, standards, regulations, and organizations working on AI memory governance |

@@ -38,7 +38,7 @@ Digital memory is defined not only by its content, but by its function: it is in
 
 This manifesto is concerned not with all data in general, but with persistent machine-held memory that affects how a person is understood, served, or influenced across time.
 
-For an expanded glossary of terms used throughout this document, see [Terminology](terminology.md).
+For an expanded glossary of terms used throughout this document, see [Terminology](docs/terminology.md).
 
 ## Why this matters now
 
@@ -60,13 +60,13 @@ This creates a new kind of lock-in.
 
 When a provider controls your memory, it controls your continuity. Leaving the provider may mean losing the accumulated context that makes the system useful. Staying may mean accepting invisible profiling and permanent retention. Neither is a free relationship.
 
-The current model of AI memory is not good enough for a world in which agents become persistent partners in work, learning, creativity, health, and daily life. For documented evidence of how major AI providers handle memory today, see [Evidence](evidence.md).
+The current model of AI memory is not good enough for a world in which agents become persistent partners in work, learning, creativity, health, and daily life. For documented evidence of how major AI providers handle memory today, see [Evidence](docs/evidence.md).
 
 A person may choose to let an AI system remember them in order to serve them better. That does not mean they have agreed to let that memory be reused to build other systems, improve unrelated models, or flow into other software and services beyond their awareness or control.
 
 A system that remembers a person deeply may also learn how to influence that person deeply. As memory deepens, it could learn which fears, desires, habits, and vulnerabilities move that person most (see the EU AI Act's prohibition on AI systems that exploit vulnerabilities, Article 5). Without strong limits, memory can be used not only to assist human choice, but to shape it — quietly, continuously, and at scale.
 
-The danger is not only that AI systems remember us. It is that they risk remembering us wrongly — and acting on those errors with confidence, at scale, and without correction. For documented examples of how providers handle memory today, and the gaps that persist, see [Evidence](evidence.md).
+The danger is not only that AI systems remember us. It is that they risk remembering us wrongly — and acting on those errors with confidence, at scale, and without correction. For documented examples of how providers handle memory today, and the gaps that persist, see [Evidence](docs/evidence.md).
 
 ## Our core claim
 
@@ -238,7 +238,7 @@ What is still missing is a single document that names AI memory as a distinct ca
 
 That is what this manifesto is. Where others build the infrastructure and the early policies, this document names the full set of rights that must govern them, and on whose terms.
 
-For a full map of the organizations, standards, regulations, and projects working on AI memory governance, see [Landscape](landscape.md).
+For a full map of the organizations, standards, regulations, and projects working on AI memory governance, see [Landscape](docs/landscape.md).
 
 ## What we are building toward
 
@@ -276,7 +276,7 @@ If you are a company, commit to open export, open import, provenance, and user-c
 
 If you are a user, demand the right to see, move, and control what AI remembers about you.
 
-For ways to contribute, see the project's [contribution guidelines](../CONTRIBUTING.md).
+For ways to contribute, see the project's [contribution guidelines](CONTRIBUTING.md).
 
 AI memory will become one of the defining infrastructures of digital life.
 

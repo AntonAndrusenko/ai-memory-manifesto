@@ -4,7 +4,7 @@ Documented facts about how major AI providers accumulate, store, and reuse user 
 
 *Last updated: April 2026. All statements reflect publicly documented policies and events. URLs and policies may have changed since original publication. Verify against current versions before citing.*
 
-**See also:** [The Manifesto](manifest.md) | [Terminology](terminology.md) | [Landscape](landscape.md)
+**See also:** [The Manifesto](../MANIFESTO.md) | [Terminology](terminology.md) | [Landscape](landscape.md)
 
 ---
 
