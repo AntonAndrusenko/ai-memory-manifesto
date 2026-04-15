@@ -1,137 +1,163 @@
 /**
- * Atmospheric WebGL shader background
- * Inspired by sunset gradients and liquid metal aesthetics
- * Tuned to the AI Memory Manifesto color palette
+ * WebGL shader background
+ * Dark theme: Simple Sunset — warm flowing gradients
+ * Light theme: Liquid Silver — metallic reflective ripples
  */
 (function () {
   var canvas = document.getElementById('shader-bg');
   if (!canvas) return;
 
   var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-  if (!gl) return; // Fallback to CSS gradient mesh
+  if (!gl) return;
 
-  // Hide the CSS gradient mesh since shader replaces it
+  // Hide CSS gradient mesh fallback
   function hideMesh() {
     var mesh = document.querySelector('.gradient-mesh');
     if (mesh) mesh.style.display = 'none';
   }
   hideMesh();
-  // Also try after DOM is ready (in case script loads before mesh element)
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', hideMesh);
   }
 
-  // Vertex shader — full-screen quad
-  var vertSrc = [
-    'attribute vec2 a_pos;',
-    'void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }'
-  ].join('\n');
+  var vertSrc = 'attribute vec2 a_pos; void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }';
 
-  // Fragment shader — flowing atmospheric gradient
   var fragSrc = [
-    'precision mediump float;',
+    'precision highp float;',
     'uniform float u_time;',
     'uniform vec2 u_res;',
-    'uniform float u_dark;', // 1.0 for dark theme, 0.0 for light
+    'uniform float u_dark;',
 
-    // Simplex-ish noise
-    'vec3 mod289(vec3 x) { return x - floor(x * (1.0/289.0)) * 289.0; }',
-    'vec2 mod289(vec2 x) { return x - floor(x * (1.0/289.0)) * 289.0; }',
-    'vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }',
-
-    'float snoise(vec2 v) {',
-    '  const vec4 C = vec4(0.211324865405187, 0.366025403784439,',
-    '                     -0.577350269189626, 0.024390243902439);',
-    '  vec2 i = floor(v + dot(v, C.yy));',
-    '  vec2 x0 = v - i + dot(i, C.xx);',
-    '  vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);',
-    '  vec4 x12 = x0.xyxy + C.xxzz;',
-    '  x12.xy -= i1;',
-    '  i = mod289(i);',
-    '  vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));',
-    '  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);',
-    '  m = m*m; m = m*m;',
-    '  vec3 x = 2.0 * fract(p * C.www) - 1.0;',
-    '  vec3 h = abs(x) - 0.5;',
-    '  vec3 ox = floor(x + 0.5);',
-    '  vec3 a0 = x - ox;',
-    '  m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);',
+    // Simplex noise
+    'vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}',
+    'vec2 mod289(vec2 x){return x-floor(x*(1.0/289.0))*289.0;}',
+    'vec3 permute(vec3 x){return mod289(((x*34.0)+1.0)*x);}',
+    'float snoise(vec2 v){',
+    '  const vec4 C=vec4(0.211324865405187,0.366025403784439,-0.577350269189626,0.024390243902439);',
+    '  vec2 i=floor(v+dot(v,C.yy));',
+    '  vec2 x0=v-i+dot(i,C.xx);',
+    '  vec2 i1=(x0.x>x0.y)?vec2(1.0,0.0):vec2(0.0,1.0);',
+    '  vec4 x12=x0.xyxy+C.xxzz; x12.xy-=i1;',
+    '  i=mod289(i);',
+    '  vec3 p=permute(permute(i.y+vec3(0.0,i1.y,1.0))+i.x+vec3(0.0,i1.x,1.0));',
+    '  vec3 m=max(0.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.0);',
+    '  m=m*m; m=m*m;',
+    '  vec3 x=2.0*fract(p*C.www)-1.0;',
+    '  vec3 h=abs(x)-0.5;',
+    '  vec3 ox=floor(x+0.5);',
+    '  vec3 a0=x-ox;',
+    '  m*=1.79284291400159-0.85373472095314*(a0*a0+h*h);',
     '  vec3 g;',
-    '  g.x = a0.x * x0.x + h.x * x0.y;',
-    '  g.yz = a0.yz * x12.xz + h.yz * x12.yw;',
-    '  return 130.0 * dot(m, g);',
+    '  g.x=a0.x*x0.x+h.x*x0.y;',
+    '  g.yz=a0.yz*x12.xz+h.yz*x12.yw;',
+    '  return 130.0*dot(m,g);',
     '}',
 
-    // Fractal Brownian Motion
-    'float fbm(vec2 p) {',
-    '  float f = 0.0;',
-    '  f += 0.5000 * snoise(p); p *= 2.02;',
-    '  f += 0.2500 * snoise(p); p *= 2.03;',
-    '  f += 0.1250 * snoise(p); p *= 2.01;',
-    '  f += 0.0625 * snoise(p);',
-    '  return f / 0.9375;',
+    'float fbm(vec2 p){',
+    '  float f=0.0;',
+    '  f+=0.5000*snoise(p); p*=2.02;',
+    '  f+=0.2500*snoise(p); p*=2.03;',
+    '  f+=0.1250*snoise(p); p*=2.01;',
+    '  f+=0.0625*snoise(p);',
+    '  return f/0.9375;',
     '}',
 
-    'void main() {',
-    '  vec2 uv = gl_FragCoord.xy / u_res;',
-    '  float aspect = u_res.x / u_res.y;',
-    '  vec2 p = vec2(uv.x * aspect, uv.y);',
+    'void main(){',
+    '  vec2 uv=gl_FragCoord.xy/u_res;',
+    '  float aspect=u_res.x/u_res.y;',
+    '  vec2 p=vec2(uv.x*aspect, uv.y);',
+    '  float t=u_time*0.06;',
 
-    '  float t = u_time * 0.08;', // Slow movement
+    // ===== DARK THEME: Simple Sunset =====
+    // Layered flowing noise for organic movement
+    '  float n1=fbm(p*1.0+vec2(t*0.4, t*0.2));',
+    '  float n2=fbm(p*0.7-vec2(t*0.3, t*0.35)+vec2(5.2,1.3));',
+    '  float n3=fbm(p*1.8+vec2(n1*0.6, n2*0.6));',
+    '  float n4=fbm(p*0.5+vec2(t*0.15, -t*0.1)+vec2(n3*0.3, 0.0));',
 
-    // Multiple flowing noise layers
-    '  float n1 = fbm(p * 1.2 + vec2(t * 0.3, t * 0.15));',
-    '  float n2 = fbm(p * 0.8 - vec2(t * 0.2, t * 0.25) + vec2(5.2, 1.3));',
-    '  float n3 = fbm(p * 1.5 + vec2(n1 * 0.5, n2 * 0.5));', // Warped noise
+    // Sunset color palette
+    '  vec3 s_deep   = vec3(0.02, 0.01, 0.04);',   // Near-black void
+    '  vec3 s_night  = vec3(0.06, 0.02, 0.10);',   // Deep purple-black
+    '  vec3 s_plum   = vec3(0.18, 0.04, 0.22);',   // Rich plum
+    '  vec3 s_wine   = vec3(0.35, 0.06, 0.15);',   // Dark wine
+    '  vec3 s_ember  = vec3(0.55, 0.12, 0.06);',   // Deep ember
+    '  vec3 s_rust   = vec3(0.85, 0.30, 0.12);',   // Rust/orange
+    '  vec3 s_amber  = vec3(0.95, 0.55, 0.15);',   // Warm amber
+    '  vec3 s_glow   = vec3(1.00, 0.75, 0.30);',   // Hot glow
 
-    // Dark theme colors (matching manifesto palette)
-    '  vec3 dark_bg    = vec3(0.024, 0.020, 0.039);',  // #06050a
-    '  vec3 dark_rust  = vec3(0.886, 0.361, 0.243);',  // #e8654a — warm rust
-    '  vec3 dark_ember = vec3(0.600, 0.150, 0.080);',  // Deep ember
-    '  vec3 dark_plum  = vec3(0.280, 0.100, 0.360);',  // Purple tint
-    '  vec3 dark_deep  = vec3(0.060, 0.040, 0.120);',  // Deep void
+    // Vertical gradient: dark top to warm bottom
+    '  float grad = pow(1.0 - uv.y, 1.5);',        // Concentrated at bottom
 
-    // Light theme colors
-    '  vec3 light_bg   = vec3(0.965, 0.957, 0.941);',  // #f6f4f0
-    '  vec3 light_rust = vec3(0.710, 0.224, 0.129);',  // #b53921
-    '  vec3 light_warm = vec3(0.920, 0.860, 0.800);',  // Warm cream
-    '  vec3 light_cool = vec3(0.880, 0.900, 0.920);',  // Cool tint
-    '  vec3 light_deep = vec3(0.940, 0.930, 0.910);',  // Subtle depth
+    // Build the sunset
+    '  vec3 dark_col = s_deep;',
 
-    // Build gradient based on noise and position
-    '  float grad_y = uv.y;',
-    '  float warp = n3 * 0.35;',
+    // Base atmosphere with vertical gradient
+    '  dark_col = mix(dark_col, s_night, smoothstep(0.0, 0.5, grad));',
+    '  dark_col = mix(dark_col, s_plum, smoothstep(0.2, 0.7, grad) * 0.7);',
 
-    // Orb-like concentrations
-    '  float orb1 = smoothstep(0.7, 0.0, length(p - vec2(aspect * 0.2, 0.8) + vec2(sin(t) * 0.3, cos(t * 0.7) * 0.2)));',
-    '  float orb2 = smoothstep(0.9, 0.0, length(p - vec2(aspect * 0.75, 0.3) + vec2(cos(t * 0.6) * 0.4, sin(t * 0.5) * 0.3)));',
-    '  float orb3 = smoothstep(0.6, 0.0, length(p - vec2(aspect * 0.5, 0.1) + vec2(sin(t * 0.4) * 0.2, cos(t * 0.3) * 0.15)));',
+    // Flowing warm bands
+    '  float band1 = smoothstep(0.3, 0.6, grad + n1 * 0.25) * smoothstep(0.9, 0.6, grad + n2 * 0.2);',
+    '  dark_col = mix(dark_col, s_wine, band1 * 0.8);',
 
-    // Dark theme composition
-    '  vec3 dark_col = dark_bg;',
-    '  dark_col = mix(dark_col, dark_deep, n1 * 0.5 + 0.2);',
-    '  dark_col = mix(dark_col, dark_plum, orb2 * 0.35);',
-    '  dark_col = mix(dark_col, dark_ember, orb1 * 0.25);',
-    '  dark_col = mix(dark_col, dark_rust, orb3 * 0.15);',
-    '  dark_col += dark_rust * warp * 0.06;', // Subtle rust noise
-    '  dark_col = mix(dark_col, dark_bg, smoothstep(0.0, 1.0, grad_y) * 0.3);', // Darken top
+    '  float band2 = smoothstep(0.4, 0.7, grad + n2 * 0.2) * smoothstep(1.0, 0.7, grad + n1 * 0.15);',
+    '  dark_col = mix(dark_col, s_ember, band2 * 0.6);',
 
-    // Light theme composition
-    '  vec3 light_col = light_bg;',
-    '  light_col = mix(light_col, light_deep, n1 * 0.3);',
-    '  light_col = mix(light_col, light_cool, orb2 * 0.15);',
-    '  light_col = mix(light_col, light_warm, orb1 * 0.12);',
-    '  light_col = mix(light_col, light_rust, orb3 * 0.05);',
-    '  light_col += light_rust * warp * 0.02;',
+    // Concentrated warm glow areas
+    '  float glow1 = smoothstep(0.8, 0.0, length(p - vec2(aspect*0.3, 0.15) + vec2(sin(t*0.7)*0.3, cos(t*0.5)*0.1)));',
+    '  dark_col = mix(dark_col, s_rust, glow1 * 0.4);',
+
+    '  float glow2 = smoothstep(0.6, 0.0, length(p - vec2(aspect*0.7, 0.08) + vec2(cos(t*0.4)*0.2, sin(t*0.6)*0.08)));',
+    '  dark_col = mix(dark_col, s_amber, glow2 * 0.25);',
+
+    // Noise-driven wisps of warmth
+    '  float wisps = max(0.0, n3) * grad;',
+    '  dark_col += s_rust * wisps * 0.15;',
+    '  dark_col += s_glow * pow(max(0.0, n4), 3.0) * grad * 0.2;',
+
+    // Subtle top-area purple nebula
+    '  float nebula = smoothstep(0.7, 0.0, length(p - vec2(aspect*0.6, 0.85) + vec2(sin(t*0.3)*0.4, 0.0)));',
+    '  dark_col = mix(dark_col, s_plum, nebula * 0.3);',
+
+    // ===== LIGHT THEME: Liquid Silver =====
+    '  float ln1 = fbm(p * 1.5 + vec2(t * 0.5, t * 0.3));',
+    '  float ln2 = fbm(p * 2.0 - vec2(t * 0.4, t * 0.45) + vec2(3.7, 8.1));',
+    '  float ln3 = fbm(p * 3.0 + vec2(ln1 * 0.8, ln2 * 0.8));',
+
+    // Silver/mercury palette
+    '  vec3 l_base    = vec3(0.94, 0.93, 0.91);',  // Warm off-white
+    '  vec3 l_cool    = vec3(0.88, 0.90, 0.93);',  // Cool steel tint
+    '  vec3 l_silver  = vec3(0.82, 0.84, 0.87);',  // Silver mid
+    '  vec3 l_reflect = vec3(0.97, 0.97, 0.96);',  // Bright reflection
+    '  vec3 l_shadow  = vec3(0.78, 0.77, 0.75);',  // Soft shadow
+    '  vec3 l_accent  = vec3(0.85, 0.82, 0.78);',  // Warm accent
+
+    // Base with flowing cool/warm shifts
+    '  vec3 light_col = l_base;',
+    '  light_col = mix(light_col, l_cool, (ln1 * 0.5 + 0.5) * 0.3);',
+    '  light_col = mix(light_col, l_accent, (ln2 * 0.5 + 0.5) * 0.15);',
+
+    // Liquid ripple highlights
+    '  float ripple = sin(ln3 * 6.0 + t * 2.0) * 0.5 + 0.5;',
+    '  light_col = mix(light_col, l_reflect, ripple * 0.2 * smoothstep(-0.2, 0.3, ln1));',
+
+    // Flowing shadow pools
+    '  float shadow = smoothstep(0.1, -0.3, ln1 + ln2 * 0.5);',
+    '  light_col = mix(light_col, l_shadow, shadow * 0.3);',
+
+    // Mercury-like caustic reflections
+    '  float caustic = pow(max(0.0, sin(ln3 * 8.0 + ln1 * 4.0 + t * 1.5)), 4.0);',
+    '  light_col += (l_reflect - l_base) * caustic * 0.15;',
+
+    // Subtle silver shimmer
+    '  float shimmer = pow(max(0.0, snoise(p * 5.0 + vec2(t * 0.8, t * 0.6))), 3.0);',
+    '  light_col = mix(light_col, l_silver, shimmer * 0.2);',
 
     // Mix based on theme
     '  vec3 col = mix(light_col, dark_col, u_dark);',
-
     '  gl_FragColor = vec4(col, 1.0);',
     '}',
   ].join('\n');
 
-  // Compile shader
   function compile(type, src) {
     var s = gl.createShader(type);
     gl.shaderSource(s, src);
@@ -157,7 +183,6 @@
   }
   gl.useProgram(prog);
 
-  // Full-screen quad
   var buf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
@@ -165,21 +190,17 @@
   gl.enableVertexAttribArray(aPos);
   gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
-  // Uniforms
   var uTime = gl.getUniformLocation(prog, 'u_time');
   var uRes = gl.getUniformLocation(prog, 'u_res');
   var uDark = gl.getUniformLocation(prog, 'u_dark');
 
   function resize() {
-    // Use lower resolution for performance (shader is blurry anyway)
     var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    var w = window.innerWidth * dpr;
-    var h = window.innerHeight * dpr;
-    canvas.width = w;
-    canvas.height = h;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
     canvas.style.width = window.innerWidth + 'px';
     canvas.style.height = window.innerHeight + 'px';
-    gl.viewport(0, 0, w, h);
+    gl.viewport(0, 0, canvas.width, canvas.height);
   }
 
   resize();
@@ -194,10 +215,8 @@
 
   function render() {
     frame++;
-    // Render every 2nd frame for performance (background doesn't need 60fps)
     if (frame % 2 === 0) {
-      var t = (performance.now() - startTime) / 1000.0;
-      gl.uniform1f(uTime, t);
+      gl.uniform1f(uTime, (performance.now() - startTime) / 1000.0);
       gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.uniform1f(uDark, isDark());
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);

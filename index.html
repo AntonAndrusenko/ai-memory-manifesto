@@ -710,8 +710,6 @@
     <div class="orb orb-4"></div>
   </div>
 
-  <!-- ASCII RAIN -->
-  <canvas id="ascii-bg"></canvas>
 
   <!-- TOP NAV -->
   <nav class="top-nav">
@@ -845,80 +843,7 @@
         const next = current === 'dark' ? 'light' : 'dark';
         root.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
-        // Restart ASCII with new colors
-        asciiNeedsRestart = true;
       });
-    })();
-
-    // ===== ASCII BACKGROUND =====
-    var asciiNeedsRestart = false;
-    (function () {
-      const canvas = document.getElementById('ascii-bg');
-      const ctx = canvas.getContext('2d');
-      const chars = 'MEMORY.RECALL.FORGET.RETAIN.INFER.STORE.DELETE.EXPORT.KNOW.ACCESS.PORT.PROVE.CORRECT.CONTEST.EXPIRE.AUDIT.DISCLOSE.CONTROL.SOVEREIGN';
-      const pool = chars.split('');
-      const fontSize = 13;
-      let columns, drops;
-
-      function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        columns = Math.floor(canvas.width / fontSize);
-        drops = new Array(columns).fill(0).map(() => Math.random() * -100);
-      }
-
-      resize();
-      window.addEventListener('resize', resize);
-
-      function getColors() {
-        const s = getComputedStyle(document.documentElement);
-        return {
-          fade: s.getPropertyValue('--ascii-fade').trim(),
-          base: s.getPropertyValue('--ascii-base').trim(),
-          mid: s.getPropertyValue('--ascii-mid').trim(),
-          bright: s.getPropertyValue('--ascii-bright').trim()
-        };
-      }
-
-      let colors = getColors();
-
-      function draw() {
-        if (asciiNeedsRestart) {
-          colors = getColors();
-          // Full clear to remove old theme artifacts
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          // Re-init drops for a fresh start
-          for (let i = 0; i < columns; i++) drops[i] = Math.random() * -50;
-          asciiNeedsRestart = false;
-        }
-
-        ctx.fillStyle = colors.fade;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.font = fontSize + 'px JetBrains Mono, monospace';
-
-        for (let i = 0; i < columns; i++) {
-          const char = pool[Math.floor(Math.random() * pool.length)];
-          const x = i * fontSize;
-          const y = drops[i] * fontSize;
-
-          const r = Math.random();
-          ctx.fillStyle = r > 0.95 ? colors.bright : r > 0.8 ? colors.mid : colors.base;
-          ctx.fillText(char, x, y);
-          drops[i] += 0.3 + Math.random() * 0.2;
-
-          if (drops[i] * fontSize > canvas.height && Math.random() > 0.985) {
-            drops[i] = 0;
-          }
-        }
-      }
-
-      let frame = 0;
-      function loop() {
-        frame++;
-        if (frame % 3 === 0) draw();
-        requestAnimationFrame(loop);
-      }
-      loop();
     })();
 
     // ===== SCROLL REVEAL =====
