@@ -41,10 +41,10 @@
       --grad-a: rgba(226, 92, 62, 0.12);
       --grad-b: rgba(120, 60, 180, 0.10);
       --grad-c: rgba(40, 100, 180, 0.08);
-      --ascii-base: rgba(107, 106, 103, 0.06);
-      --ascii-mid: rgba(226, 92, 62, 0.09);
-      --ascii-bright: rgba(226, 92, 62, 0.22);
-      --ascii-fade: rgba(6, 5, 10, 0.08);
+      --ascii-base: rgba(107, 106, 103, 0.03);
+      --ascii-mid: rgba(226, 92, 62, 0.05);
+      --ascii-bright: rgba(226, 92, 62, 0.12);
+      --ascii-fade: rgba(6, 5, 10, 0.10);
       --nav-bg: rgba(6, 5, 10, 0.7);
       --right-hover-text: #fff;
     }
@@ -64,9 +64,9 @@
       --grad-a: rgba(226, 92, 62, 0.06);
       --grad-b: rgba(160, 100, 200, 0.05);
       --grad-c: rgba(60, 130, 200, 0.05);
-      --ascii-base: rgba(0, 0, 0, 0.02);
-      --ascii-mid: rgba(201, 65, 42, 0.04);
-      --ascii-bright: rgba(201, 65, 42, 0.10);
+      --ascii-base: rgba(0, 0, 0, 0.01);
+      --ascii-mid: rgba(201, 65, 42, 0.02);
+      --ascii-bright: rgba(201, 65, 42, 0.06);
       --ascii-fade: rgba(246, 244, 240, 0.12);
       --nav-bg: rgba(246, 244, 240, 0.8);
       --right-hover-text: #1a1917;
@@ -948,6 +948,20 @@
   </script>
 
   <!-- Hypothesis annotation layer — lets anyone comment on the text -->
+  <script type="application/json" class="js-hypothesis-config">
+    {
+      "branding": {
+        "accentColor": "#e8654a",
+        "appBackgroundColor": "#0e0d14",
+        "ctaBackgroundColor": "#be4028",
+        "ctaTextColor": "#ffffff",
+        "annotationFontFamily": "'DM Sans', -apple-system, sans-serif",
+        "selectionFontFamily": "'DM Sans', -apple-system, sans-serif"
+      },
+      "theme": "clean",
+      "showHighlights": "whenSidebarOpen"
+    }
+  </script>
   <script src="https://hypothes.is/embed.js" async></script>
 
 </body>
