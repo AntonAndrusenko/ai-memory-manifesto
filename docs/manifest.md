@@ -64,9 +64,9 @@ The current model of AI memory is not good enough for a world in which agents be
 
 A person may choose to let an AI system remember them in order to serve them better. That does not mean they have agreed to let that memory be reused to build other systems, improve unrelated models, or flow into other software and services beyond their awareness or control.
 
-A system that remembers a person deeply may also learn how to influence that person deeply. As memory deepens, it could learn which fears, desires, habits, and vulnerabilities move them most. Without strong limits, memory can be used not only to assist human choice, but to shape it — quietly, continuously, and at scale.
+A system that remembers a person deeply may also learn how to influence that person deeply. As memory deepens, it could learn which fears, desires, habits, and vulnerabilities move that person most (see the EU AI Act's prohibition on AI systems that exploit vulnerabilities, Article 5). Without strong limits, memory can be used not only to assist human choice, but to shape it — quietly, continuously, and at scale.
 
-The danger is not only that AI systems remember us. It is that they risk remembering us wrongly — and acting on those errors with confidence, at scale, and without correction.
+The danger is not only that AI systems remember us. It is that they risk remembering us wrongly — and acting on those errors with confidence, at scale, and without correction. For documented examples of how providers handle memory today, and the gaps that persist, see [Evidence](evidence.md).
 
 ## Our core claim
 
@@ -106,7 +106,7 @@ Every person must be able to inspect their memory in full, in a human-legible an
 Every person must be able to export and transfer their memory across systems without artificial friction, lock-in, or degradation.
 
 ### 4. The right to distinction
-Every memory system must clearly distinguish between user-provided facts, user preferences, temporary goals, system summaries, and model inferences.
+Every memory system must clearly distinguish between user-stated facts, user preferences and instructions, system summaries, model inferences, and contextual state.
 
 ### 5. The right to provenance
 Every meaningful memory item must carry an origin: where it came from, how it was produced, when it was changed, and on what basis it is trusted.
@@ -184,7 +184,7 @@ Memory must move across tools, models, and platforms.
 Memory must be visible and explainable.
 
 **Distinguishability**
-Systems must distinguish fact, inference, summary, and instruction.
+Systems must distinguish user-stated facts, user preferences and instructions, system summaries, model inferences, and contextual state.
 
 **Reversibility**
 Users must be able to edit, revoke, delete, and expire memory.
@@ -226,7 +226,7 @@ The concern this manifesto names is not ours alone. A growing ecosystem of organ
 
 The **Open Memory Alliance** is organizing developers, privacy advocates, and enterprises around the goal of open APIs, portable schemas, and user-first policies for AI memory. The **Portable AI Memory (PAM)** project has published an open interchange format — a vendor-neutral JSON schema with provenance, confidence scoring, and provider mappings — that begins to make memory portability technically real. The **AI Memory Protocol (AMP)** tackles the adjacent problem of normalizing conversation history across incompatible platform exports. **Mem0** and its OpenMemory project are building open-source infrastructure for local, user-controlled AI memory storage.
 
-On the policy side, the **New America Open Technology Institute** has published analysis arguing that AI agents with persistent memory create novel risks that current privacy frameworks cannot address. In academia, the concept of **cognitive sovereignty** — the right of individuals to maintain autonomous thought against systems holding deep personal memory — has been proposed as a framework for understanding what is at stake. The **IETF AIPREF Working Group** has begun standardizing vocabulary for expressing preferences about how content is collected and processed for AI, establishing a precedent for machine-readable memory preferences.
+On the policy side, the **New America Open Technology Institute** has published analysis arguing that AI agents with persistent memory create novel risks that current privacy frameworks cannot address. In academia, the concept of **cognitive sovereignty** — the right of individuals to maintain autonomous thought against systems holding deep personal memory — has been proposed as a framework for understanding what is at stake. The **IETF AIPREF Working Group** has begun standardizing vocabulary for expressing preferences about how content is collected and processed for AI, establishing a precedent for machine-readable preferences about AI data processing that could extend to memory governance.
 
 This work is valuable, and this manifesto is aligned with it.
 
@@ -236,7 +236,7 @@ But an organizational mission is not a declaration of rights. A JSON schema is n
 
 What is still missing is a single document that names AI memory as a distinct category, defines it, enumerates the rights that must govern it, identifies the threats unique to it — including silent repurposing and memory-based manipulation — and calls for both the technical standards and the political will to enforce those rights.
 
-That is what this manifesto is. Where others build the pipes, this document declares what must flow through them, and on whose terms.
+That is what this manifesto is. Where others build the infrastructure and the early policies, this document names the full set of rights that must govern them, and on whose terms.
 
 For a full map of the organizations, standards, regulations, and projects working on AI memory governance, see [Landscape](landscape.md).
 
@@ -275,6 +275,8 @@ If you are a lawyer or policymaker, help translate these principles into enforce
 If you are a company, commit to open export, open import, provenance, and user-controlled memory.
 
 If you are a user, demand the right to see, move, and control what AI remembers about you.
+
+For ways to contribute, see the project's [contribution guidelines](../CONTRIBUTING.md).
 
 AI memory will become one of the defining infrastructures of digital life.
 

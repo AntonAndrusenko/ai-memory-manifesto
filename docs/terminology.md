@@ -10,7 +10,7 @@ A shared vocabulary for AI memory governance. These definitions are used through
 
 ### Digital Memory
 
-A structured, persistent representation of past interactions, preferences, and contextual knowledge retained by or on behalf of a user within digital systems. Distinguished from raw "data" (unstructured bits) and "history" (chronological logs) by its semantic organization and intended use for future recall and personalization. The concept draws from Vannevar Bush's 1945 "memex" vision and has been formalized in lifelogging and personal informatics research (Dodge & Kitchin, 2007).
+A structured, persistent representation of past interactions, preferences, and contextual knowledge retained by or on behalf of a user within digital systems. Distinguished from raw "data" (unstructured bits) and "history" (chronological logs) by its semantic organization and intended use for shaping future behavior toward that person — including recall, personalization, prediction, and influence. The concept draws from Vannevar Bush's 1945 "memex" vision and has been formalized in lifelogging and personal informatics research (Dodge & Kitchin, 2007).
 
 ### Personally Identifiable Information (PII)
 
@@ -55,6 +55,10 @@ The documented origin, derivation history, and chain of custody of a memory obje
 ### Memory Profile
 
 The aggregate representation of a user constructed from accumulated memory objects, inferences, and behavioral patterns within an AI system. Functions as a composite identity model that shapes how the AI responds to and anticipates the user. Distinct from a "user profile" in that it may include inferred psychological, cognitive, and relational attributes beyond demographic or preference data.
+
+### Agent (AI Agent)
+
+An AI system capable of autonomous or semi-autonomous action on behalf of a user, including planning, tool use, and interaction with external services. Agents are distinguished from passive AI assistants by their capacity to act across sessions, maintain persistent context, and operate with delegated authority. As agents accumulate memory to improve their effectiveness, the governance of that memory becomes critical. The term is used broadly in the AI industry (see Anthropic, "Building effective agents," 2024; NIST AI RMF, 2023).
 
 ### Memory-Free Mode
 
@@ -122,11 +126,11 @@ The principle that AI memory systems must maintain sufficient records and transp
 
 ### Cognitive Sovereignty
 
-The right of an individual to maintain autonomous control over the information systems that shape their thinking, decision-making, and self-perception. In AI memory contexts, it extends to the right to control what an AI "knows" about you and how that knowledge influences interactions. The term has gained traction in neuroethics (Ienca & Andorno, 2017) and is increasingly applied to AI governance.
+The right of an individual to maintain autonomous thought and control over the information systems that shape their thinking, decision-making, and self-perception. In AI memory contexts, it extends to the right to control what an AI "knows" about you and to defend against systems that hold deep personal memory being used to covertly shape your cognition. The term has gained traction in neuroethics (Ienca & Andorno, 2017) and is increasingly applied to AI governance.
 
 ### Distinguishability
 
-The principle that AI memory systems must clearly differentiate between categories of memory objects based on their epistemic status: (1) facts explicitly stated by the user, (2) inferences derived by the system, and (3) summaries or abstractions generated from multiple data points. Without distinguishability, users cannot meaningfully exercise rights to correction or contest inferences.
+The principle that AI memory systems must clearly differentiate between categories of memory objects based on their epistemic status: (1) user-stated facts explicitly provided by the user, (2) user preferences and instructions directing the system's behavior, (3) system summaries or abstractions generated from multiple data points, (4) model inferences derived or concluded by the system, and (5) contextual state such as goals, temporary context, and situational details. Without distinguishability, users cannot meaningfully exercise rights to correction or contest inferences.
 
 ---
 
@@ -147,4 +151,5 @@ The principle that AI memory systems must clearly differentiate between categori
 - NIST SP 800-122, "Guide to Protecting the Confidentiality of PII," 2010
 - Nissenbaum, H., "Privacy as Contextual Integrity," 2004
 - OECD Privacy Guidelines, 1980 (revised 2013)
+- Anthropic, "Building effective agents," 2024
 - Wachter & Mittelstadt, "A Right to Reasonable Inferences," Columbia Business Law Review, 2019

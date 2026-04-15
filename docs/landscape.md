@@ -50,6 +50,7 @@ A map of projects, standards, regulations, and organizations working on AI memor
 | **California SB 53** | Transparency in Frontier AI Act. Targets frontier models (>10^26 FLOPs). Requires safety evaluations and reporting. | Effective January 2026 | Accountability for the most capable systems — those most likely to build rich memory profiles. |
 | **California AB 2013** | Generative AI Training Data Transparency Act. Requires disclosure of training datasets including personal information. | Effective 2026 | Transparency about whether user memories are used for training. |
 | **Colorado AI Act (SB 24-205)** | Requires reasonable care to protect consumers from algorithmic discrimination in high-risk AI systems. | Effective June 2026 | Addresses risks from AI profiling that relies on accumulated memory. |
+| **White House AI Bill of Rights (OSTP)** | Blueprint for an AI Bill of Rights (October 2022). Five principles: Safe and Effective Systems, Algorithmic Discrimination Protections, Data Privacy, Notice and Explanation, Human Alternatives. Non-binding framework. | Published, non-binding | Establishes federal-level language for AI rights including data privacy and notice — thematic overlap with this manifesto's demands, though it does not address AI memory specifically. |
 | **US Federal Executive Order on AI (Dec 2025)** | Establishes federal policy to preempt state AI regulations that obstruct national competitiveness. | Active | May preempt state-level memory/portability protections. |
 
 ---
@@ -61,9 +62,10 @@ A map of projects, standards, regulations, and organizations working on AI memor
 | **New America OTI** | AI agents, MCP, and memory risks | "AI Agents and Memory" policy brief (Nov 2025) — examines risks and proposes interventions | [newamerica.org](https://www.newamerica.org/oti/briefs/ai-agents-and-memory/) |
 | **MyData Global** | Human-centric personal data | "Human-centric Roadmap for Europe" (May 2025) with European Commission. AI Symposium on compliance and data governance. | [mydata.org](https://mydata.org/) |
 | **Future of Privacy Forum** | AI privacy policy research | Tracks 210+ AI bills across 42 US states. Identified agentic AI and algorithmic pricing as key 2026 policy topics. | [fpf.org](https://fpf.org/) |
-| **Data Transfer Initiative (DTI)** | Data portability | Published AI portability principles: users should download and transfer AI data in structured formats. Shipped conversation history data model. See also Open Standards & Protocols above. | [dtinit.org](https://dtinit.org/) |
+| **Data Transfer Initiative (DTI)** | Data portability | See Open Standards & Protocols above for full description. Additional policy work: published AI portability principles advocating that users should download and transfer AI data in structured formats. | [dtinit.org](https://dtinit.org/) |
 | **Stanford HAI** | AI governance and sovereignty | Research on AI sovereignty and user autonomy | [hai.stanford.edu](https://hai.stanford.edu/) |
-| **Cambridge Forum on AI** | Cognitive freedom and law | Research on cognitive freedom as legal framework — right to form thoughts free from covert AI influence | [cambridge.org](https://www.cambridge.org/core/journals/cambridge-forum-on-ai-law-and-governance/) |
+| **Cambridge Forum on AI** (journal) | Cognitive freedom and law | Published research on cognitive freedom as legal framework — right to form thoughts free from covert AI influence | [cambridge.org](https://www.cambridge.org/core/journals/cambridge-forum-on-ai-law-and-governance/) |
+| **OECD** | AI governance principles | OECD AI Principles (2019, updated 2024). Adopted by 46 countries. Values-based principles for trustworthy AI including transparency, accountability, and human-centred values. No memory-specific provisions. | [oecd.ai](https://oecd.ai/) |
 
 ---
 
@@ -73,8 +75,7 @@ A map of projects, standards, regulations, and organizations working on AI memor
 |-----------|-------------|--------|
 | **Agentic AI Foundation (Linux Foundation)** | Formed December 2025. Founding members: Anthropic, OpenAI, Block, Microsoft, Google. Anchored by MCP. Mission: open standards for agentic AI to avoid fragmentation and vendor lock-in. | Active, newly formed |
 | **Google Gemini Memory Import** | Launched March 2026. Users can import memories and chat history from ChatGPT, Claude, and other providers. Uses proprietary approach, not PAM/AMP. Not available in EEA/Switzerland/UK. | Active |
-| **Anthropic Memory Import** | Memory import features for Claude deployed early March 2026. Users can export raw personal data. | Active |
-| **Data Transfer Project** | Open-source portability infrastructure backed by Google, Apple, Meta, Microsoft, X (formerly Twitter). Stewarded by DTI (see Open Standards & Protocols above). | Active |
+| **Anthropic Memory Import** | Memory import features for Claude deployed March 2026. Users can export raw personal data. | Active |
 
 ---
 
@@ -85,8 +86,8 @@ A map of projects, standards, regulations, and organizations working on AI memor
 | **IETF** | AIPREF Working Group — vocabulary for AI usage preferences and HTTP attachment mechanisms | Active, drafts in progress |
 | **W3C** | WebMCP incubation (AI agents on the web), Solid specifications (user data pods), DID v1.1 (decentralized identity), voice agent standards | Active, various stages |
 | **IEEE** | 7000 series — ethical AI design standards. CertifAIEd certification for accountability, privacy, transparency. No memory-specific standard yet. | Active, standards published |
-| **NIST** | AI Risk Management Framework (AI RMF 1.0, January 2023). Voluntary framework for managing AI risks across governance, mapping, measuring, and managing. No memory-specific guidance, but applicable to memory-bearing AI systems. | Active, voluntary | 
-| **OECD** | OECD AI Principles (2019, updated 2024). Adopted by 46 countries. Establish values-based principles for trustworthy AI including transparency, accountability, and human-centred values. No memory-specific provisions. | Active, intergovernmental |
+| **NIST** | AI Risk Management Framework (AI RMF 1.0, January 2023). Voluntary framework for managing AI risks across governance, mapping, measuring, and managing. No memory-specific guidance, but applicable to memory-bearing AI systems. | Active, voluntary |
+| **ISO/IEC** | 42001:2023 — AI Management System standard. First international certifiable standard for AI. Covers risk management, data governance, and responsible AI use. No memory-specific provisions but applicable to memory-bearing systems. | Active, published December 2023 |
 
 ---
 
