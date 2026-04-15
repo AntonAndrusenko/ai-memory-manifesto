@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The AI Memory Manifesto</title>
+  <meta name="description" content="A declaration of rights over the memory that AI systems build about us. 16 rights. 12 principles. One demand: memory must belong to the user.">
+  <meta property="og:title" content="The AI Memory Manifesto">
+  <meta property="og:description" content="AI systems are beginning to remember us. This manifesto declares the rights that must govern that memory.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://antonandrusenko.github.io/ai-memory-manifesto/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The AI Memory Manifesto">
+  <meta name="twitter:description" content="AI systems are beginning to remember us. This manifesto declares the rights that must govern that memory.">
+  <style>
+    :root {
+      --bg: #fafaf9;
+      --text: #1c1917;
+      --muted: #57534e;
+      --accent: #b91c1c;
+      --border: #d6d3d1;
+      --surface: #f5f5f4;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0c0a09;
+        --text: #fafaf9;
+        --muted: #a8a29e;
+        --accent: #f87171;
+        --border: #292524;
+        --surface: #1c1917;
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero */
+    header {
+      padding: 120px 0 80px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+
+    header .tagline {
+      font-size: 1.15rem;
+      color: var(--muted);
+      font-style: italic;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* Divider */
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--border);
+      margin: 0 auto;
+    }
+
+    /* Sections */
+    section {
+      padding: 64px 0;
+    }
+
+    section h2 {
+      font-size: 1.1rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .beliefs p {
+      font-size: 1.15rem;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .beliefs strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Rights */
+    .rights-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 560px) {
+      .rights-grid { grid-template-columns: 1fr; }
+    }
+
+    .right {
+      padding: 20px 24px;
+      background: var(--surface);
+      border-left: 3px solid var(--border);
+      transition: border-color 0.2s;
+    }
+
+    .right:hover {
+      border-left-color: var(--accent);
+    }
+
+    .right .number {
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .right .title {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    /* Urgency */
+    .urgency {
+      text-align: center;
+    }
+
+    .urgency p {
+      font-size: 1.15rem;
+      margin-bottom: 20px;
+      color: var(--muted);
+    }
+
+    .urgency p:last-child {
+      color: var(--text);
+      font-weight: 700;
+      font-style: italic;
+    }
+
+    /* CTA */
+    .cta {
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .cta .closing {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 400;
+      font-style: italic;
+      margin-bottom: 48px;
+      line-height: 1.4;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 32px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text);
+    }
+
+    /* Footer */
+    footer {
+      padding: 48px 0;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <header>
+      <h1>The AI Memory Manifesto</h1>
+      <p class="tagline">A declaration of rights over the memory that AI systems build about us.</p>
+    </header>
+
+    <div class="divider"></div>
+
+    <section class="beliefs">
+      <p>AI systems are beginning to remember us.</p>
+      <p>They remember our preferences, our goals, our habits, our vulnerabilities, and the patterns they infer from everything we say and do.</p>
+      <p>This memory is becoming <strong>a new layer of digital identity</strong> &mdash; one that shapes how systems respond to us, what they assume about us, and what version of us they preserve over time.</p>
+      <p>That memory must not be trapped by default.</p>
+      <p>It must not be owned in silence.</p>
+      <p>It must belong to the people whose lives it represents.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <section>
+      <h2>Sixteen Rights</h2>
+      <div class="rights-grid">
+        <div class="right"><div class="number">01</div><div class="title">The right to know</div></div>
+        <div class="right"><div class="number">02</div><div class="title">The right to access</div></div>
+        <div class="right"><div class="number">03</div><div class="title">The right to portability</div></div>
+        <div class="right"><div class="number">04</div><div class="title">The right to distinction</div></div>
+        <div class="right"><div class="number">05</div><div class="title">The right to provenance</div></div>
+        <div class="right"><div class="number">06</div><div class="title">The right to correction</div></div>
+        <div class="right"><div class="number">07</div><div class="title">The right to contest inference</div></div>
+        <div class="right"><div class="number">08</div><div class="title">The right to deletion</div></div>
+        <div class="right"><div class="number">09</div><div class="title">The right to expiration</div></div>
+        <div class="right"><div class="number">10</div><div class="title">The right to selective disclosure</div></div>
+        <div class="right"><div class="number">11</div><div class="title">The right to user-controlled storage</div></div>
+        <div class="right"><div class="number">12</div><div class="title">The right to auditability</div></div>
+        <div class="right"><div class="number">13</div><div class="title">The right to a memory-free mode</div></div>
+        <div class="right"><div class="number">14</div><div class="title">The right not to be ruled by secret memory</div></div>
+        <div class="right"><div class="number">15</div><div class="title">The right to meaningful control over reuse</div></div>
+        <div class="right"><div class="number">16</div><div class="title">The right to freedom from memory-based manipulation</div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="urgency">
+      <p>Every major AI provider is building persistent memory right now. The user gets personalization. The provider gets lock-in.</p>
+      <p>There is no portable format. No meaningful export. No right to inspect what a system has inferred about you.</p>
+      <p>The norms are not yet fixed. The architectures are not yet inevitable. This is the window.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="cta">
+      <p class="closing">Memory must belong to the user.</p>
+      <div class="buttons">
+        <a href="MANIFESTO.md" class="btn btn-primary">Read the Manifesto</a>
+        <a href="https://github.com/AntonAndrusenko/ai-memory-manifesto" class="btn btn-secondary">View on GitHub</a>
+      </div>
+    </section>
+
+    <footer>
+      <p><a href="docs/evidence.md">Evidence</a> &middot; <a href="docs/terminology.md">Terminology</a> &middot; <a href="docs/landscape.md">Landscape</a> &middot; <a href="CONTRIBUTING.md">Contribute</a></p>
+      <p>Licensed under <a href="LICENSE">CC BY-SA 4.0</a></p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
