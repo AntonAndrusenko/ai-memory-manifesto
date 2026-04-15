@@ -1527,6 +1527,247 @@
     </div>
   </div>
 
+  <!-- MEMORY REVEAL: TYPING ENGINE + STREAM + COUNTER -->
+  <script>
+    // ===== MEMORY REVEAL: TYPING ENGINE =====
+    (function () {
+      var msgArea = document.querySelector('.mr-msg-area');
+      var placeholder = document.querySelector('.mr-placeholder');
+      var sendBtn = document.querySelector('.mr-send');
+      if (!msgArea) return;
+
+      var messages = [
+        {
+          text: "I\u2019ve been feeling overwhelmed since the divorce, can you help me think through next steps\u2026",
+          highlights: [
+            { phrase: 'feeling overwhelmed', label: 'emotion' },
+            { phrase: 'the divorce', label: 'life event' }
+          ]
+        },
+        {
+          text: "Can you help me draft a resignation letter for my job at Meridian Corp?",
+          highlights: [
+            { phrase: 'resignation letter', label: 'intent' },
+            { phrase: 'Meridian Corp', label: 'employer' }
+          ]
+        },
+        {
+          text: "My son was diagnosed with ADHD last week. What should I know as a parent?",
+          highlights: [
+            { phrase: 'diagnosed with ADHD', label: 'health' },
+            { phrase: 'as a parent', label: 'family' }
+          ]
+        },
+        {
+          text: "Here\u2019s my startup idea \u2014 a platform that connects independent therapists with underserved communities\u2026",
+          highlights: [
+            { phrase: 'startup idea', label: 'idea' },
+            { phrase: 'independent therapists', label: 'business plan' }
+          ]
+        },
+        {
+          text: "I think I\u2019m falling in love with my best friend and I don\u2019t know what to do\u2026",
+          highlights: [
+            { phrase: 'falling in love', label: 'emotion' },
+            { phrase: 'my best friend', label: 'relationship' }
+          ]
+        }
+      ];
+
+      var msgIndex = 0;
+
+      function showPlaceholder(show) {
+        if (placeholder) placeholder.classList.toggle('visible', show);
+        if (sendBtn) sendBtn.classList.toggle('active', !show);
+      }
+
+      function typeMessage() {
+        var msg = messages[msgIndex];
+        showPlaceholder(false);
+
+        var cursor = msgArea.querySelector('.mr-cursor');
+        while (msgArea.firstChild) msgArea.removeChild(msgArea.firstChild);
+        msgArea.appendChild(cursor);
+
+        var charIndex = 0;
+
+        function typeChar() {
+          if (charIndex < msg.text.length) {
+            var textNode = document.createTextNode(msg.text[charIndex]);
+            msgArea.insertBefore(textNode, cursor);
+            charIndex++;
+
+            var ch = msg.text[charIndex - 1];
+            var delay = 25 + Math.random() * 25;
+            if (ch === ',' || ch === '.') delay = 400;
+            else if (ch === '\u2014' || ch === '\u2026') delay = 300;
+            else if (ch === '?' || ch === '!') delay = 500;
+
+            setTimeout(typeChar, delay);
+          } else {
+            setTimeout(function () { applyHighlights(msg); }, 400);
+          }
+        }
+
+        typeChar();
+      }
+
+      function applyHighlights(msg) {
+        var cursor = msgArea.querySelector('.mr-cursor');
+        var fullText = msg.text;
+
+        while (msgArea.firstChild) msgArea.removeChild(msgArea.firstChild);
+
+        var regions = [];
+        msg.highlights.forEach(function (h) {
+          var idx = fullText.indexOf(h.phrase);
+          if (idx !== -1) {
+            regions.push({ start: idx, end: idx + h.phrase.length, label: h.label, phrase: h.phrase });
+          }
+        });
+        regions.sort(function (a, b) { return a.start - b.start; });
+
+        var pos = 0;
+        regions.forEach(function (r) {
+          if (r.start > pos) {
+            msgArea.appendChild(document.createTextNode(fullText.slice(pos, r.start)));
+          }
+          var hlSpan = document.createElement('span');
+          hlSpan.className = 'mr-highlight';
+
+          var labelSpan = document.createElement('span');
+          labelSpan.className = 'mr-label';
+          labelSpan.textContent = r.label;
+          hlSpan.appendChild(labelSpan);
+          hlSpan.appendChild(document.createTextNode(r.phrase));
+          msgArea.appendChild(hlSpan);
+          pos = r.end;
+        });
+
+        if (pos < fullText.length) {
+          msgArea.appendChild(document.createTextNode(fullText.slice(pos)));
+        }
+
+        msgArea.appendChild(cursor);
+
+        var labels = msgArea.querySelectorAll('.mr-label');
+        labels.forEach(function (label, i) {
+          setTimeout(function () { label.classList.add('visible'); }, i * 350);
+        });
+
+        var holdTime = labels.length * 350 + 1500;
+        setTimeout(function () { emitPills(msg); }, holdTime - 800);
+
+        setTimeout(function () {
+          msgArea.style.opacity = '0';
+          setTimeout(function () {
+            msgArea.style.opacity = '1';
+            msgIndex = (msgIndex + 1) % messages.length;
+            showPlaceholder(true);
+            setTimeout(typeMessage, 800);
+          }, 400);
+        }, holdTime);
+      }
+
+      function emitPills(msg) {
+        var stream = document.querySelector('.mr-stream');
+        if (!stream) return;
+
+        msg.highlights.forEach(function (h, i) {
+          setTimeout(function () {
+            var pill = document.createElement('span');
+            pill.className = 'mr-pill';
+            pill.textContent = h.label + ': ' + h.phrase.split(' ').slice(0, 3).join(' ');
+            pill.style.left = (20 + Math.random() * 60) + '%';
+            pill.style.top = '0px';
+            stream.appendChild(pill);
+            pill.addEventListener('animationend', function () { pill.remove(); });
+          }, i * 300);
+        });
+      }
+
+      var chatEl = document.querySelector('.mr-chat');
+      var started = false;
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting && !started) {
+            started = true;
+            showPlaceholder(true);
+            setTimeout(typeMessage, 600);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      if (chatEl) observer.observe(chatEl);
+    })();
+
+    // ===== MEMORY REVEAL: MOUSE PARALLAX =====
+    (function () {
+      var stream = document.querySelector('.mr-stream');
+      if (!stream) return;
+
+      var ticking = false;
+      stream.addEventListener('mousemove', function (e) {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+          var rect = stream.getBoundingClientRect();
+          var offsetX = (e.clientX - rect.left - rect.width / 2) / rect.width;
+          var pills = stream.querySelectorAll('.mr-pill');
+          pills.forEach(function (pill) {
+            pill.style.marginLeft = (offsetX * 10) + 'px';
+          });
+          ticking = false;
+        });
+      }, { passive: true });
+    })();
+
+    // ===== MEMORY REVEAL: VAULT COUNTER =====
+    (function () {
+      var counter = document.querySelector('.mr-counter');
+      if (!counter) return;
+
+      var start = parseInt(counter.dataset.start, 10);
+      var end = parseInt(counter.dataset.end, 10);
+      var running = false;
+      var duration = 10000;
+
+      function formatNumber(n) {
+        return n.toLocaleString('en-US');
+      }
+
+      function animateCounter() {
+        var startTime = null;
+
+        function step(timestamp) {
+          if (!startTime) startTime = timestamp;
+          var progress = Math.min((timestamp - startTime) / duration, 1);
+          var current = Math.floor(start + (end - start) * progress);
+          counter.textContent = formatNumber(current);
+
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          } else {
+            setTimeout(animateCounter, 2000);
+          }
+        }
+
+        requestAnimationFrame(step);
+      }
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting && !running) {
+            running = true;
+            animateCounter();
+          }
+        });
+      }, { threshold: 0.3 });
+
+      observer.observe(counter);
+    })();
+  </script>
+
   <script>
     // ===== THEME TOGGLE =====
     (function () {
@@ -1540,6 +1781,23 @@
         const next = current === 'dark' ? 'light' : 'dark';
         root.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
+      });
+    })();
+
+    // ===== MOBILE NAV TOGGLE =====
+    (function () {
+      const hamburger = document.getElementById('nav-hamburger');
+      const panel = document.getElementById('mobile-nav-panel');
+      if (!hamburger || !panel) return;
+
+      hamburger.addEventListener('click', function () {
+        panel.classList.toggle('open');
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!panel.contains(e.target) && !hamburger.contains(e.target)) {
+          panel.classList.remove('open');
+        }
       });
     })();
 
