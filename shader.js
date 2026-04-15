@@ -116,15 +116,11 @@
     '  dark_col += s_rust * wisps * 0.15;',
     '  dark_col += s_glow * pow(max(0.0, n4), 3.0) * grad * 0.2;',
 
-    // Mouse interaction — warm glow that follows cursor
+    // Mouse interaction — subtle warmth shift near cursor
     '  vec2 mp = vec2(u_mouse.x * aspect, u_mouse.y);',
     '  float mDist = length(p - mp);',
-    '  float mGlow = smoothstep(0.5, 0.0, mDist);',
-    '  dark_col = mix(dark_col, s_rust, mGlow * 0.35);',
-    '  dark_col = mix(dark_col, s_amber, mGlow * mGlow * 0.2);',
-    // Warp noise near cursor
-    '  float mWarp = fbm(p * 2.0 + mp * 3.0 + vec2(t));',
-    '  dark_col += s_glow * mWarp * mGlow * 0.08;',
+    '  float mGlow = smoothstep(0.6, 0.0, mDist);',
+    '  dark_col = mix(dark_col, dark_col * 1.15 + s_ember * 0.03, mGlow * 0.5);',
 
     // Subtle top-area purple nebula
     '  float nebula = smoothstep(0.7, 0.0, length(p - vec2(aspect*0.6, 0.85) + vec2(sin(t*0.3)*0.4, 0.0)));',
@@ -160,13 +156,11 @@
     '  float caustic = pow(max(0.0, sin(ln3 * 8.0 + ln1 * 4.0 + t * 1.5)), 4.0);',
     '  light_col += (l_reflect - l_base) * caustic * 0.15;',
 
-    // Mouse interaction — bright reflection pool at cursor
+    // Mouse interaction — subtle brightness shift near cursor
     '  vec2 lmp = vec2(u_mouse.x * aspect, u_mouse.y);',
     '  float lmDist = length(p - lmp);',
-    '  float lmGlow = smoothstep(0.45, 0.0, lmDist);',
-    '  light_col = mix(light_col, l_reflect, lmGlow * 0.4);',
-    '  float lmRipple = sin(lmDist * 20.0 - u_time * 0.15) * 0.5 + 0.5;',
-    '  light_col = mix(light_col, l_shadow, lmGlow * lmRipple * 0.15);',
+    '  float lmGlow = smoothstep(0.6, 0.0, lmDist);',
+    '  light_col = mix(light_col, light_col * 1.03 + l_reflect * 0.02, lmGlow * 0.4);',
 
     // Subtle silver shimmer
     '  float shimmer = pow(max(0.0, snoise(p * 5.0 + vec2(t * 0.8, t * 0.6))), 3.0);',
