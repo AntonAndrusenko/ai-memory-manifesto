@@ -6,3 +6,5 @@
 corrections/
 prompts/
 .playwright-mcp/
+*.png
+!docs/screenshots/*.png
