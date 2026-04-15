@@ -14,6 +14,23 @@
   }
 })();
 
+// ===== MOBILE NAV TOGGLE =====
+(function () {
+  var hamburger = document.getElementById('nav-hamburger');
+  var panel = document.getElementById('mobile-nav-panel');
+  if (!hamburger || !panel) return;
+
+  hamburger.addEventListener('click', function () {
+    panel.classList.toggle('open');
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!panel.contains(e.target) && !hamburger.contains(e.target)) {
+      panel.classList.remove('open');
+    }
+  });
+})();
+
 
 // ===== MARKDOWN RENDERER =====
 // GitHub repo config
