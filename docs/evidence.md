@@ -2,7 +2,7 @@
 
 Documented facts about how major AI providers accumulate, store, and reuse user memory and conversation data.
 
-*Last updated: April 2026. All statements reflect publicly documented policies and events. URLs and policies may have changed since original publication. Verify against current versions before citing.*
+*Last updated: April 15, 2026. All statements reflect publicly documented policies and events. URLs and policies may have changed since original publication. Verify against current versions before citing.*
 
 **See also:** [The Manifesto](../MANIFESTO.md) | [Terminology](terminology.md) | [Landscape](landscape.md)
 
@@ -25,7 +25,7 @@ Contributors adding new evidence should follow this pattern:
 
 | Provider | Default Training on User Data | Opt-Out Available | Training Exemption (Paid) | On-Device Option | Persistent Memory |
 |----------|-------------------------------|-------------------|----------------------|------------------|-------------------|
-| OpenAI | Yes (Free/Plus) | Yes | Yes (Enterprise/Team) | No | Yes (Feb 2024) |
+| OpenAI | Yes (Free/Go/Plus) | Yes | Yes (Team/Enterprise/Edu) | Atlas browser (local-ish) | Yes (Feb 2024; overhauled Apr 2025) |
 | Anthropic | Opt-in (Free/Pro/Max) | Yes (toggle in settings) | Yes (Team/Enterprise) | No | Beta (2025); import added March 2026 |
 | Meta | Yes (public posts) | EU/UK | N/A | No | Yes (2024) |
 | xAI/Grok | Yes (X data) | Yes (buried setting) | N/A | No | Limited |
@@ -41,16 +41,89 @@ Contributors adding new evidence should follow this pattern:
 ### Memory Features
 
 - **[ChatGPT Memory](https://openai.com/index/memory-and-new-controls-for-chatgpt/)** launched February 2024 (initially limited, then broadly to Plus/Team/Enterprise). Memory allows ChatGPT to remember facts across conversations.
-- Users can view, edit, and delete individual memories via Settings > Personalization > Memory.
+- **Memory overhauled April 2025** ([Memory FAQ](https://help.openai.com/en/articles/8590148-memory-faq)): Memory now operates in two modes:
+  - **Saved Memories**: Details the user explicitly asks ChatGPT to remember (e.g. "Remember that I am vegetarian"). ChatGPT may also save details proactively if it determines they may be useful. Saved memories persist until the user deletes them. Available to all tiers.
+  - **Reference Chat History**: ChatGPT references all past conversations to personalize responses. Unlike saved memories, details from past chats can change over time as ChatGPT updates what's more helpful to remember. Available to Plus and Pro only; **not yet available to Enterprise and Edu** ([Memory FAQ](https://help.openai.com/en/articles/8590148-memory-faq)).
+- Users can delete individual saved memories, clear all memories, or turn memory off entirely in Settings > Personalization.
+- **Deleted saved memories are retained for up to 30 days** for safety and debugging purposes ([Memory FAQ](https://help.openai.com/en/articles/8590148-memory-faq)).
+- Turning off "Reference Chat History" deletes the information ChatGPT remembered from past chats. That information is deleted from OpenAI's systems within 30 days ([Memory FAQ](https://help.openai.com/en/articles/8590148-memory-faq)).
+- To fully remove something ChatGPT knows, users must delete both the saved memory **and** all chats where the information was shared — deleting a chat does not remove saved memories, and deleting a memory does not remove mentions from past chats ([Memory FAQ](https://help.openai.com/en/articles/8590148-memory-faq)).
+- ChatGPT Plus and Pro users can enable **automatic memory management**, which prioritizes the most relevant memories and moves less important ones to the background to prevent a "memory full" state ([Memory FAQ](https://help.openai.com/en/articles/8590148-memory-faq)).
+- Memory is **disabled in the EU and EEA** pending compliance reviews under the AI Act ([search results](https://www.datastudios.org/post/chatgpt-data-retention-policies-updated-rules-and-user-controls-in-2025)).
+- ChatGPT Enterprise workspace owners can turn Memory on or off for all users in Admin Settings ([Memory FAQ — Business Version](https://help.openai.com/en/articles/9295112-memory-faq-business-version)).
 - **[Custom Instructions](https://openai.com/index/custom-instructions-for-chatgpt/)** (July 2023) preceded Memory as a lighter personalization layer.
-- **[Temporary Chat](https://help.openai.com/en/articles/8914046-temporary-chat-faq)** mode allows conversations that don't generate memories or appear in history.
+- **[Temporary Chat](https://help.openai.com/en/articles/8914046-temporary-chat-faq)** mode: conversations don't appear in history, don't generate memories, and are not used for training. Temporary chats are automatically deleted within 30 days ([Privacy Policy](https://openai.com/policies/us-privacy-policy/)).
+- **Memory is used in ChatGPT Search**: ChatGPT may use saved memories or recent chats to rewrite search queries for more personalized results ([Memory FAQ](https://help.openai.com/en/articles/8590148-memory-faq)).
+
+### Data Collection
+
+OpenAI's privacy policy (updated April 1, 2026) discloses the following categories of personal data collected ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/); [ROW Privacy Policy](https://openai.com/policies/row-privacy-policy/)):
+
+- **Account Information**: Name, contact information, credentials, date of birth, payment information, transaction history, profile picture, username.
+- **User Content ("Content")**: Prompts, uploaded files, images, audio/video, Sora characters, data from connected services, and interactions with other users.
+- **Communication Information**: Contents of messages sent to OpenAI (e.g. via email or social media).
+- **Contact Data**: Device address book data (if user connects contacts). OpenAI checks which contacts also use Services and notifies the user when a contact signs up.
+- **Log Data**: IP address, browser type/settings, date/time, interaction data.
+- **Usage Data**: Content viewed/engaged with, features used, actions taken, feedback submitted, time zone, country, device type.
+- **Device Information**: Device name, OS, device identifiers, browser.
+- **Location Information**: General location from IP address; precise GPS location if the user opts in.
+- **Cookies and Similar Technologies**: Used for authentication, preferences, and analytics.
+- **Atlas Browser Data**: If user uses the Atlas browser, browsing data is collected according to user controls ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/); [Atlas Data Controls](https://help.openai.com/en/articles/12574142-chatgpt-atlas-data-controls-and-privacy)).
+- **Advertiser Data** (Free/Go users): OpenAI may receive information from advertisers and data partners to measure ad effectiveness ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/)).
+- **Third-party sources**: Security/safety partners, marketing vendors, publicly available internet data for model training.
 
 ### Data Retention and Reuse
 
-- Content from Free and Plus users **may be used to train models** by default ([source](https://help.openai.com/en/articles/5722486-how-your-data-is-used-to-improve-model-performance)).
+- Content from Free, Go, and Plus users **may be used to train models** by default ([source](https://help.openai.com/en/articles/5722486-how-your-data-is-used-to-improve-model-performance)).
 - **Opt-out**: Users can disable "Improve the model for everyone" in Settings > Data Controls ([source](https://help.openai.com/en/articles/8983130-what-if-i-want-to-keep-my-history-on-but-disable-model-training)). Conversations may still be retained for abuse monitoring ([Data Controls FAQ](https://help.openai.com/en/articles/7730893-data-controls-faq)).
+- **De-identified data survives deletion**: The privacy policy states that deleted data that has "already been de-identified and disassociated from your account when you allow us to use your Content to improve our models" is **not** removed upon deletion ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/), Section 4). This means training contributions made before opt-out or deletion are permanent.
+- **Abuse monitoring**: API abuse monitoring logs are retained for up to 30 days by default. Eligible customers can apply for **Zero Data Retention (ZDR)** or Modified Abuse Monitoring controls ([Data Controls — Platform](https://developers.openai.com/api/docs/guides/your-data)).
 - **API users**: Data is **not** used for training by default (since March 2023 policy update) ([source](https://developers.openai.com/api/docs/guides/your-data)).
-- **Enterprise and Team tiers**: Data is **never** used for training ([source](https://openai.com/enterprise-privacy/)).
+- **Team, Enterprise, Edu, Healthcare, Teachers**: Data is **never** used for training by default. No opt-out required ([source](https://openai.com/enterprise-privacy/)).
+- **Enterprise retention controls**: Enterprise workspace owners can set a custom data retention policy with a **minimum of 90 days** ([Enterprise Privacy](https://openai.com/enterprise-privacy/)).
+- **Free/Plus chat retention**: Standard chat history retained **indefinitely** unless the user actively deletes conversations. Once deleted, chats are purged within 30 days ([Privacy Policy](https://openai.com/policies/us-privacy-policy/), Section 4).
+- **Training uses memories**: If "Improve the model for everyone" is on, OpenAI may use content shared with ChatGPT — **including past chats, saved memories, and memories from those chats** — to improve models ([Memory FAQ](https://help.openai.com/en/articles/8590148-memory-faq)).
+
+### Content Ownership and Rights
+
+- **Users retain ownership of Input** and **own the Output**. OpenAI assigns to the user "all right, title, and interest, if any" in Output ([Terms of Use](https://openai.com/policies/row-terms-of-use/); [API Copyright FAQ](https://help.openai.com/en/articles/5008634-will-openai-claim-copyright-over-what-outputs-i-generate-with-the-api)).
+- **Training license (consumer)**: Users can opt out of their Content being used to train models. If opted in, no explicit scope limitation is defined for how training data may be reused.
+- **Business terms**: OpenAI will only use Customer Content as necessary to provide the Services, comply with law, and enforce policies. OpenAI **will not** use Customer Content to develop or improve Services unless the customer explicitly agrees ([Services Agreement](https://openai.com/policies/services-agreement/)).
+- **Restriction**: Users are prohibited from using Output to develop models that compete with OpenAI ([Terms of Use](https://openai.com/policies/row-terms-of-use/)).
+
+### User Rights (Privacy Policy)
+
+The privacy policy grants the following rights ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/), Section 6; [ROW Privacy Policy](https://openai.com/policies/row-privacy-policy/), Section 6):
+
+- Access personal data and information about how it is processed.
+- Rectify or update personal data.
+- Delete personal data (removed from systems within 30 days, subject to exceptions).
+- Transfer personal data to a third party (right to data portability).
+- Restrict processing.
+- Withdraw consent.
+- Lodge a complaint with a data protection authority.
+- Object to processing for direct marketing or based on legitimate interests.
+- **Export**: Users can export ChatGPT history and data via Settings > Data Controls.
+
+**Accuracy caveat**: OpenAI's privacy policy explicitly notes that ChatGPT may produce factually inaccurate information about users and recommends submitting correction requests to `dsar@openai.com`, which will be considered "based on applicable law and the technical capabilities of our models" ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/), Section 6).
+
+### Advertising
+
+- **Ads launched February 2026** for Free and Go tier users in the U.S. ([OpenAI announcement](https://openai.com/index/testing-ads-in-chatgpt/); [Axios](https://www.axios.com/2026/02/09/chatgpt-ads-testing-go-free)). Expanded to Canada, Australia, and New Zealand in March 2026.
+- Ads appear at the bottom of answers when there is a relevant sponsored product or service, and are clearly labeled.
+- OpenAI states ads do not influence ChatGPT's answers, and conversations are kept private from advertisers.
+- **Ad personalization uses user data**: The privacy policy states that for Free and Go users, personal data is used "to personalize the ads you see on our Services (subject to your settings), and to measure the effectiveness of ads shown on our Services" ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/), Section 2).
+- OpenAI may receive data from advertisers and data partners about user purchases ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/), Section 1).
+- Pro, Business, and Enterprise subscriptions do not include ads.
+
+### Atlas Browser
+
+- **[ChatGPT Atlas](https://openai.com/index/introducing-chatgpt-atlas/)** browser (launched October 2025) integrates ChatGPT into web browsing on Mac.
+- **Browser Memories**: If opted in, ChatGPT remembers facts and insights from browsing. Web contents are deleted immediately after summarization; privacy-filtered summaries are deleted within 7 days ([Atlas Data Controls](https://help.openai.com/en/articles/12574142-chatgpt-atlas-data-controls-and-privacy)).
+- Users can control which sites ChatGPT can see via a per-site toggle in the address bar.
+- Browsing content is **not** used to train models by default.
+- Incognito mode prevents saving browsing history, cookies, or form inputs, but chats are still retained for 30 days for abuse detection.
+- **Privacy concerns**: In testing, Atlas was found to memorize sensitive health queries including specific doctor names ([Proton analysis](https://proton.me/blog/is-chatgpt-atlas-safe); [Washington Post](https://www.washingtonpost.com/technology/2025/10/22/chatgpt-atlas-browser/); [NPR](https://www.npr.org/2025/11/07/nx-s1-5597010/openai-atlas-browser-chatgpt-data-privacy)).
 
 ### Documented Concerns
 
@@ -58,6 +131,10 @@ Contributors adding new evidence should follow this pattern:
 - **FTC investigation (2023)**: Investigation into whether data practices caused consumer harm. No public enforcement action as of early 2026 ([Washington Post](https://www.washingtonpost.com/technology/2023/07/13/ftc-openai-chatgpt-sam-altman-lina-khan/)).
 - **Training data regurgitation (November 2023)**: Nasr et al. ("[Scalable Extraction of Training Data from (Production) Language Models](https://arxiv.org/abs/2311.17035)," Google DeepMind / University of Washington, 2023) demonstrated ChatGPT could be prompted to output memorized training data.
 - **Class-action lawsuits (2023)**: Multiple suits filed, including [*P.M. v. OpenAI Inc.*](https://www.courtlistener.com/docket/67535351/pm-v-openai-lp/) (N.D. Cal.), alleging scraping of personal data without consent.
+- **NYT court order (May–September 2025)**: A U.S. federal court ordered OpenAI to "preserve and segregate all output log data that would otherwise be deleted on a going forward basis" during the *New York Times v. OpenAI* copyright lawsuit. The preservation order was lifted September 26, 2025 ([Engadget](https://www.engadget.com/ai/openai-no-longer-has-to-preserve-all-of-its-chatgpt-data-with-some-exceptions-192422093.html)). Conversations from the April–September 2025 window remain in secure storage pending litigation, except for data from EEA/Switzerland/UK users.
+- **Memory disabled in EU/EEA**: Memory features remain disabled in the EU and EEA pending compliance reviews under the AI Act.
+- **De-identified data is permanent**: Once content has been de-identified and used for training, it survives user deletion requests — the privacy policy explicitly carves this out from the 30-day deletion commitment ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/), Section 4).
+- **Sensitive information in memories**: OpenAI acknowledges that "memory raises important privacy and safety considerations" and says it has trained ChatGPT not to proactively remember sensitive information (e.g. health details) unless explicitly asked, but advises users to "avoid entering information you wouldn't want remembered" ([Memory FAQ](https://help.openai.com/en/articles/8590148-memory-faq)).
 
 ---
 
@@ -227,10 +304,16 @@ Contributors adding new evidence should follow this pattern:
 
 2. **Opt-out is the norm; opt-in is emerging.** Most providers (except Apple) default to using free-tier consumer data for training and require users to find and toggle a setting to stop it. Mistral offers no free-tier opt-out, requiring an upgrade to a paid tier. Anthropic is an exception in the other direction: as of 2025, it moved to an opt-in model where free-tier users choose whether to allow training ([source](https://www.anthropic.com/news/updates-to-our-consumer-terms)).
 
-3. **EU regulatory pressure drives change.** Italy (OpenAI), Ireland (Meta, xAI), Brazil (Meta), and GDPR broadly have forced providers to add opt-outs, pause training, or restructure data flows. US users have fewer protections.
+3. **EU regulatory pressure drives change.** Italy (OpenAI), Ireland (Meta, xAI), Brazil (Meta), and GDPR broadly have forced providers to add opt-outs, pause training, or restructure data flows. US users have fewer protections. OpenAI's Memory feature remains disabled in the EU/EEA pending compliance reviews.
 
 4. **Apple is the outlier.** The only major provider that categorically states it does not use user data for training and processes primarily on-device.
 
-5. **Memory features are converging.** All major providers are moving toward persistent cross-conversation memory, raising the stakes for retention and deletion practices.
+5. **Memory features are converging.** All major providers are moving toward persistent cross-conversation memory, raising the stakes for retention and deletion practices. OpenAI's April 2025 memory overhaul introduced two modes (saved memories + chat history reference), with ChatGPT using memory to personalize search queries — a sign of deepening integration.
 
 6. **Derivative memory is ungoverned.** None of the reviewed providers' terms of service or privacy policies explicitly address what happens to summaries, embeddings, and inferences derived from deleted conversations. This pattern is notable for what is absent: none of the providers reviewed define retention, governance, or deletion obligations for derivative representations.
+
+7. **De-identified training data is permanent.** OpenAI's privacy policy explicitly states that data which has been "de-identified and disassociated from your account" for model training is not removed upon deletion ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/), Section 4). Once content has contributed to training, the contribution is irreversible — even if the user later opts out or deletes their data.
+
+8. **Advertising creates new memory incentives.** OpenAI introduced ads for Free and Go tier users in February 2026, using personal data for ad personalization and receiving purchase data from advertisers ([US Privacy Policy](https://openai.com/policies/us-privacy-policy/)). This creates an economic incentive to retain and analyze user memory beyond its original purpose of personalization.
+
+9. **Memory deletion is fragmented and incomplete.** OpenAI requires users to delete both saved memories **and** all chats where information was shared to fully remove what ChatGPT knows. Deleting a chat does not remove saved memories; deleting a memory does not remove mentions from past chats. Deleted saved memories are retained for 30 days. De-identified training contributions survive indefinitely ([Memory FAQ](https://help.openai.com/en/articles/8590148-memory-faq); [US Privacy Policy](https://openai.com/policies/us-privacy-policy/)).
