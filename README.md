@@ -21,7 +21,11 @@ This manifesto argues that AI memory is a distinct category of data that deserve
 
 ## Why now
 
-AI memory is deployed but not yet governed. The norms are not fixed. The architectures are not inevitable. This is the window to shape the future of how AI remembers us.
+Every major AI provider is building persistent memory. They are building it to make their systems more useful, more personal — and stickier. The user gets personalization; the provider gets lock-in. Today, there is no portable format for AI memory, no meaningful export of what a system has inferred about you, and no way to carry your accumulated context to a competing service.
+
+New memory-related projects, papers, and startups are appearing every week. The infrastructure is being built right now — but almost entirely on the provider's terms, not the user's. The decisions being made today about memory formats, retention defaults, and portability will shape the relationship between people and AI systems for years to come.
+
+The norms are not yet fixed. The dominant architectures are not yet inevitable. This is the window to shape the future of how AI remembers us — before memory lock-in becomes irreversible.
 
 ## Contributing
 
