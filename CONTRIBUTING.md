@@ -19,7 +19,8 @@ Thank you for your interest in contributing. This is an open document — we wel
 ### What kinds of contributions are welcome
 
 - **Language improvements** — clarity, precision, tone.
-- **New arguments or evidence** — if a claim needs stronger grounding, help us strengthen it. See [Evidence](docs/evidence.md) for documented provider practices.
+- **New arguments or evidence** — if a claim needs stronger grounding, help us strengthen it. See [Evidence](docs/evidence.md) for documented provider practices. All factual claims in the evidence document must link to a primary source (official announcement, policy page, regulatory decision, or peer-reviewed publication). See the [Citation Standard](docs/evidence.md#citation-standard) section for formatting rules.
+- **Screenshots** — UI settings, default states, and policy pages change over time. Dated screenshots in [`docs/screenshots/`](docs/screenshots/) preserve the evidence. Name files as `YYYY-MM-DD-provider-description.png` and reference them inline in the evidence document.
 - **Translations** — help make the manifesto accessible in other languages.
 - **Technical contributions** — schemas, reference implementations, format proposals that advance the technical agenda.
 - **Legal and policy analysis** — mapping the manifesto's demands to existing legal frameworks.
