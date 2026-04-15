@@ -826,18 +826,20 @@
       font-size: 0.65rem;
       font-weight: 400;
       color: var(--accent);
-      background: var(--surface);
-      border: 1px solid rgba(232, 101, 74, 0.3);
+      background: #16141c;
+      border: 1px solid rgba(232, 101, 74, 0.35);
       border-radius: 4px;
       padding: 2px 8px;
       white-space: nowrap;
       opacity: 0;
       transition: opacity 0.4s ease;
       pointer-events: none;
+      z-index: 1;
     }
 
     [data-theme="light"] .mr-msg-area .mr-label {
-      border-color: rgba(181, 57, 33, 0.3);
+      background: #edeae5;
+      border-color: rgba(181, 57, 33, 0.35);
     }
 
     .mr-msg-area .mr-label.visible {
