@@ -1,0 +1,11 @@
+name = "manifesto-suggest-edit"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+GITHUB_OWNER = "AntonAndrusenko"
+GITHUB_REPO = "ai-memory-manifesto"
+ALLOWED_ORIGIN = "https://antonandrusenko.github.io"
+
+# GITHUB_TOKEN must be set as a secret:
+#   npx wrangler secret put GITHUB_TOKEN

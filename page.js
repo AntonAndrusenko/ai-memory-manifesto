@@ -82,15 +82,31 @@ var asciiNeedsRestart = false;
 })();
 
 // ===== MARKDOWN RENDERER =====
-// Fetches a .md file, parses with marked.js, sanitizes with DOMPurify, renders into target
+// GitHub repo config
+var GITHUB_REPO = 'AntonAndrusenko/ai-memory-manifesto';
+var GITHUB_BRANCH = 'main';
+var GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/' + GITHUB_BRANCH + '/';
+
+// Fetches a .md file from GitHub (with local fallback), parses, sanitizes, renders.
+// NOTE: innerHTML is used here but content is sanitized via DOMPurify before injection.
+// Returns a promise that resolves when rendering is complete.
 function renderMarkdown(mdPath, targetId) {
   var target = document.getElementById(targetId);
-  if (!target) return;
+  if (!target) return Promise.resolve();
 
-  fetch(mdPath)
+  var githubUrl = GITHUB_RAW_BASE + mdPath;
+
+  // Try GitHub first, fall back to local
+  return fetch(githubUrl)
     .then(function(res) {
-      if (!res.ok) throw new Error('Failed to load ' + mdPath);
+      if (!res.ok) throw new Error('GitHub fetch failed');
       return res.text();
+    })
+    .catch(function() {
+      return fetch(mdPath).then(function(res) {
+        if (!res.ok) throw new Error('Local fetch failed');
+        return res.text();
+      });
     })
     .then(function(md) {
       // Fix internal links to point to HTML pages instead of .md files
@@ -103,12 +119,16 @@ function renderMarkdown(mdPath, targetId) {
 
       if (typeof marked !== 'undefined' && typeof DOMPurify !== 'undefined') {
         var rawHtml = marked.parse(md);
+        // Sanitized via DOMPurify to prevent XSS
         target.innerHTML = DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['target'] });
       } else {
         target.textContent = md;
       }
+
+      // Fire custom event so other scripts can hook into render completion
+      target.dispatchEvent(new CustomEvent('markdown-rendered', { bubbles: true }));
     })
     .catch(function() {
-      target.textContent = 'Failed to load content. View the source file at ' + mdPath;
+      target.textContent = 'Failed to load content. View the source at github.com/' + GITHUB_REPO;
     });
 }

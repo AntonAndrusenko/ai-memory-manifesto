@@ -5,12 +5,379 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Manifesto - AI Memory Manifesto</title>
   <meta name="description" content="The full AI Memory Manifesto: definitions, 16 rights, 12 principles, and a technical agenda for AI memory governance.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="page.css">
+  <style>
+    /* ===== LAYOUT: Sidebar + Content ===== */
+    .page-layout {
+      display: flex;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      padding-top: 56px;
+    }
+
+    /* ===== STICKY TOC SIDEBAR ===== */
+    .toc-sidebar {
+      width: 250px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 72px;
+      align-self: flex-start;
+      max-height: calc(100vh - 88px);
+      overflow-y: auto;
+      padding: 64px 0 32px 16px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .toc-sidebar::-webkit-scrollbar { width: 2px; }
+    .toc-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .toc-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .toc-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 20px;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .toc-label::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 6px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    .toc-list {
+      list-style: none;
+      border-left: 1px solid var(--border);
+      position: relative;
+    }
+
+    .toc-item { position: relative; }
+
+    .toc-link {
+      display: block;
+      padding: 5px 14px;
+      font-family: var(--sans);
+      font-size: 0.76rem;
+      font-weight: 400;
+      color: var(--dim);
+      text-decoration: none;
+      line-height: 1.35;
+      transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+      border-left: 2px solid transparent;
+      margin-left: -1.5px;
+    }
+
+    .toc-link:hover {
+      color: var(--text);
+      background: var(--surface);
+      border-left-color: rgba(255,255,255,0.15);
+    }
+
+    .toc-link.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      font-weight: 500;
+      background: var(--accent-glow);
+    }
+
+    .toc-link.toc-h3 {
+      padding-left: 28px;
+      font-size: 0.7rem;
+      color: var(--dim);
+      opacity: 0.75;
+    }
+
+    .toc-link.toc-h3.active { opacity: 1; }
+
+    .page-layout .article-container { flex: 1; min-width: 0; }
+
+    /* ===== MOBILE TOC ===== */
+    .toc-mobile-toggle {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 90;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: var(--text);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .toc-mobile-toggle svg { width: 18px; height: 18px; }
+
+    .toc-mobile-toggle:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      color: var(--accent);
+    }
+
+    .toc-mobile-panel {
+      display: none;
+      position: fixed;
+      bottom: 84px;
+      right: 24px;
+      z-index: 89;
+      width: 280px;
+      max-height: 65vh;
+      overflow-y: auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 0;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+      animation: tocSlideUp 0.2s ease;
+    }
+
+    @keyframes tocSlideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .toc-mobile-panel.open { display: block; }
+    .toc-mobile-panel .toc-list { border-left: none; padding: 0 10px; }
+    .toc-mobile-panel .toc-link { border-left: none; border-radius: 6px; margin-left: 0; padding: 9px 14px; font-size: 0.8rem; }
+    .toc-mobile-panel .toc-link.active { background: var(--accent-glow); color: var(--accent); }
+    .toc-mobile-panel .toc-link.toc-h3 { padding-left: 28px; }
+
+    @media (max-width: 900px) {
+      .toc-sidebar { display: none; }
+      .toc-mobile-toggle { display: flex; }
+      .page-layout { display: block; }
+    }
+
+    /* ===== SECTION ACTION BUTTONS ===== */
+    .section-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 0;
+      margin-bottom: 24px;
+      opacity: 0.5;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Show full opacity when the parent heading area is hovered */
+    .article-container h2:hover + .section-actions,
+    .section-actions:hover {
+      opacity: 1;
+    }
+
+    .section-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--dim);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .section-action-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .section-action-btn svg { width: 11px; height: 11px; }
+
+    /* ===== SUGGEST EDIT MODAL ===== */
+    .edit-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .edit-modal-overlay.open {
+      display: flex;
+      animation: modalFadeIn 0.25s ease;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .edit-modal {
+      width: 100%;
+      max-width: 680px;
+      max-height: 85vh;
+      overflow-y: auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px 32px 32px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+      position: relative;
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .edit-modal::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 32px;
+      right: 32px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+      opacity: 0.4;
+    }
+
+    .edit-modal h3 {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+
+    .edit-modal .modal-section-name {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      opacity: 0.8;
+    }
+
+    .edit-modal label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 6px;
+    }
+
+    .edit-modal textarea,
+    .edit-modal input {
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      margin-bottom: 18px;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .edit-modal textarea:focus,
+    .edit-modal input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .edit-modal textarea {
+      min-height: 220px;
+      resize: vertical;
+      line-height: 1.7;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+    }
+
+    .edit-modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 12px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .edit-modal-actions button {
+      padding: 13px 28px;
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-cancel {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border) !important;
+    }
+    .btn-cancel:hover { background: var(--surface); color: var(--text); }
+
+    .btn-submit-edit {
+      background: var(--accent-btn);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-submit-edit:hover {
+      filter: brightness(1.15);
+      box-shadow: 0 0 40px var(--accent-glow), 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .edit-modal .edit-success { display: none; text-align: center; padding: 48px 24px; }
+    .edit-modal .edit-success svg { width: 52px; height: 52px; color: var(--accent); margin-bottom: 20px; }
+    .edit-modal .edit-success h4 { font-family: var(--serif); font-size: 1.4rem; font-weight: 400; margin-bottom: 10px; }
+    .edit-modal .edit-success p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+    .edit-modal .edit-success a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+    .page { position: relative; z-index: 2; }
+  </style>
 </head>
 <body>
+  <canvas id="shader-bg"></canvas>
   <div class="gradient-mesh"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
   <canvas id="ascii-bg"></canvas>
 
@@ -42,8 +409,14 @@
   </nav>
 
   <div class="page">
-    <div class="article-container" id="content">
-      <div class="loading">Loading manifesto...</div>
+    <div class="page-layout">
+      <aside class="toc-sidebar" id="toc-sidebar">
+        <div class="toc-label">On this page</div>
+        <ul class="toc-list" id="toc-list"></ul>
+      </aside>
+      <div class="article-container" id="content">
+        <div class="loading">Loading manifesto...</div>
+      </div>
     </div>
     <footer>
       <p class="links">
@@ -56,9 +429,244 @@
     </footer>
   </div>
 
+  <!-- Mobile TOC -->
+  <button class="toc-mobile-toggle" id="toc-mobile-toggle" aria-label="Table of contents">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
+  </button>
+  <div class="toc-mobile-panel" id="toc-mobile-panel">
+    <ul class="toc-list" id="toc-list-mobile"></ul>
+  </div>
+
+  <!-- Suggest Edit Modal -->
+  <div class="edit-modal-overlay" id="edit-modal-overlay">
+    <div class="edit-modal">
+      <div id="edit-form-container">
+        <h3>Suggest an edit</h3>
+        <div class="modal-section-name" id="edit-section-name"></div>
+        <label for="edit-name">Your name (optional)</label>
+        <input type="text" id="edit-name" placeholder="How should we credit you?">
+        <label for="edit-reason">What are you changing and why?</label>
+        <input type="text" id="edit-reason" placeholder="e.g. Clarify the definition of memory portability">
+        <label for="edit-content">Edit the section text below</label>
+        <textarea id="edit-content"></textarea>
+        <div class="edit-modal-actions">
+          <button class="btn-cancel" id="edit-cancel">Cancel</button>
+          <button class="btn-submit-edit" id="edit-submit">Submit as Pull Request</button>
+        </div>
+      </div>
+      <div class="edit-success" id="edit-success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <h4>Change submitted</h4>
+        <p>Your suggestion has been submitted as a pull request.<br><a id="edit-pr-link" href="#" target="_blank" rel="noopener">View it on GitHub</a></p>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+  <script src="shader.js"></script>
   <script src="page.js"></script>
-  <script>renderMarkdown('MANIFESTO.md', 'content');</script>
+  <script>
+    // Worker endpoint for PR creation. Set after deploying Cloudflare Worker.
+    var WORKER_URL = '';
+
+    renderMarkdown('MANIFESTO.md', 'content').then(function() {
+      buildToc();
+      injectSectionActions();
+      initScrollSpy();
+    });
+
+    // ===== BUILD TABLE OF CONTENTS =====
+    function buildToc() {
+      var content = document.getElementById('content');
+      var headings = content.querySelectorAll('h2, h3');
+      var tocList = document.getElementById('toc-list');
+      var tocMobile = document.getElementById('toc-list-mobile');
+
+      headings.forEach(function(h, i) {
+        var id = h.textContent.toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').substring(0, 50);
+        if (document.getElementById(id)) id = id + '-' + i;
+        h.id = id;
+
+        var li = document.createElement('li');
+        li.className = 'toc-item';
+        var a = document.createElement('a');
+        a.className = 'toc-link' + (h.tagName === 'H3' ? ' toc-h3' : '');
+        a.href = '#' + id;
+        a.textContent = h.textContent;
+        a.addEventListener('click', function(e) {
+          e.preventDefault();
+          h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          document.getElementById('toc-mobile-panel').classList.remove('open');
+        });
+        li.appendChild(a);
+
+        // Add to desktop TOC
+        tocList.appendChild(li);
+
+        // Clone for mobile TOC with separate event listener
+        var mobileItem = li.cloneNode(true);
+        mobileItem.querySelector('a').addEventListener('click', function(e) {
+          e.preventDefault();
+          h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          document.getElementById('toc-mobile-panel').classList.remove('open');
+        });
+        tocMobile.appendChild(mobileItem);
+      });
+    }
+
+    // ===== SCROLL SPY =====
+    function initScrollSpy() {
+      var tocLinks = document.querySelectorAll('#toc-list .toc-link, #toc-list-mobile .toc-link');
+      var headings = Array.from(document.querySelectorAll('#content h2[id], #content h3[id]'));
+
+      function update() {
+        var scrollPos = window.scrollY + 100;
+        var current = '';
+        for (var i = headings.length - 1; i >= 0; i--) {
+          if (headings[i].offsetTop <= scrollPos) {
+            current = headings[i].id;
+            break;
+          }
+        }
+        tocLinks.forEach(function(link) {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+        });
+      }
+
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    }
+
+    // ===== INJECT SECTION ACTION BUTTONS =====
+    // Note: the SVG strings below are static, hardcoded icon markup — not user input.
+    function injectSectionActions() {
+      var content = document.getElementById('content');
+      var headings = content.querySelectorAll('h2');
+      var editBaseUrl = 'https://github.com/' + GITHUB_REPO + '/edit/' + GITHUB_BRANCH + '/MANIFESTO.md';
+
+      var ghIcon = '<svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>';
+      var editIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+
+      headings.forEach(function(h) {
+        var actions = document.createElement('div');
+        actions.className = 'section-actions';
+
+        // "Edit on GitHub" — static SVG icon, safe to set via innerHTML
+        var editLink = document.createElement('a');
+        editLink.className = 'section-action-btn';
+        editLink.href = editBaseUrl;
+        editLink.target = '_blank';
+        editLink.rel = 'noopener';
+        editLink.innerHTML = ghIcon + ' Edit on GitHub';
+
+        // "Suggest edit" — static SVG icon, safe to set via innerHTML
+        var suggestBtn = document.createElement('button');
+        suggestBtn.className = 'section-action-btn';
+        suggestBtn.innerHTML = editIcon + ' Suggest edit';
+        suggestBtn.addEventListener('click', function() {
+          openEditModal(h.textContent, getSectionMarkdown(h));
+        });
+
+        actions.appendChild(editLink);
+        actions.appendChild(suggestBtn);
+        h.insertAdjacentElement('afterend', actions);
+      });
+    }
+
+    // ===== GET SECTION MARKDOWN =====
+    function getSectionMarkdown(heading) {
+      var lines = ['## ' + heading.textContent];
+      var el = heading.nextElementSibling;
+      while (el) {
+        if (el.tagName === 'H2') break;
+        if (el.classList && el.classList.contains('section-actions')) { el = el.nextElementSibling; continue; }
+        if (el.tagName === 'H3') lines.push('\n### ' + el.textContent);
+        else if (el.tagName === 'P') lines.push('\n' + el.textContent);
+        else if (el.tagName === 'UL' || el.tagName === 'OL') {
+          el.querySelectorAll('li').forEach(function(li) { lines.push('- ' + li.textContent); });
+        }
+        else if (el.tagName === 'BLOCKQUOTE') lines.push('> ' + el.textContent.trim());
+        else lines.push(el.textContent);
+        el = el.nextElementSibling;
+      }
+      return lines.join('\n');
+    }
+
+    // ===== EDIT MODAL =====
+    function openEditModal(sectionName, sectionText) {
+      document.getElementById('edit-section-name').textContent = sectionName;
+      document.getElementById('edit-content').value = sectionText;
+      document.getElementById('edit-form-container').style.display = 'block';
+      document.getElementById('edit-success').style.display = 'none';
+      document.getElementById('edit-modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('edit-cancel').addEventListener('click', closeEditModal);
+    document.getElementById('edit-modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeEditModal();
+    });
+
+    // ===== SUBMIT EDIT =====
+    document.getElementById('edit-submit').addEventListener('click', function() {
+      var name = document.getElementById('edit-name').value.trim() || 'Anonymous';
+      var reason = document.getElementById('edit-reason').value.trim() || 'Suggested edit';
+      var content = document.getElementById('edit-content').value;
+      var section = document.getElementById('edit-section-name').textContent;
+      if (!content.trim()) return;
+
+      if (WORKER_URL) {
+        var btn = document.getElementById('edit-submit');
+        btn.textContent = 'Submitting...';
+        btn.disabled = true;
+
+        fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ section: section, content: content, name: name, reason: reason })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data.pr_url) {
+            document.getElementById('edit-pr-link').href = data.pr_url;
+            document.getElementById('edit-form-container').style.display = 'none';
+            document.getElementById('edit-success').style.display = 'block';
+          } else { throw new Error(data.error || 'Unknown error'); }
+        })
+        .catch(function() { fallbackToIssue(section, content, name, reason); })
+        .finally(function() { btn.textContent = 'Submit as Pull Request'; btn.disabled = false; });
+      } else {
+        fallbackToIssue(section, content, name, reason);
+      }
+    });
+
+    function fallbackToIssue(section, content, name, reason) {
+      var title = '[Edit Suggestion] ' + section;
+      var body = '**From:** ' + name + '\n**Reason:** ' + reason + '\n**Section:** ' + section
+        + '\n\n---\n\n```markdown\n' + content + '\n```\n\n---\n*Submitted via the website suggest-edit feature.*';
+      window.open('https://github.com/' + GITHUB_REPO + '/issues/new?title='
+        + encodeURIComponent(title) + '&body=' + encodeURIComponent(body), '_blank');
+      closeEditModal();
+    }
+
+    // ===== MOBILE TOC TOGGLE =====
+    document.getElementById('toc-mobile-toggle').addEventListener('click', function() {
+      document.getElementById('toc-mobile-panel').classList.toggle('open');
+    });
+
+    document.addEventListener('click', function(e) {
+      var panel = document.getElementById('toc-mobile-panel');
+      var toggle = document.getElementById('toc-mobile-toggle');
+      if (!panel.contains(e.target) && !toggle.contains(e.target)) panel.classList.remove('open');
+    });
+  </script>
+  <script src="https://hypothes.is/embed.js" async></script>
 </body>
 </html>

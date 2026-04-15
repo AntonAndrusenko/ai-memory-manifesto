@@ -21,10 +21,10 @@
   --grad-a: rgba(226, 92, 62, 0.12);
   --grad-b: rgba(120, 60, 180, 0.10);
   --grad-c: rgba(40, 100, 180, 0.08);
-  --ascii-base: rgba(107, 106, 103, 0.13);
-  --ascii-mid: rgba(232, 101, 74, 0.18);
-  --ascii-bright: rgba(232, 101, 74, 0.45);
-  --ascii-fade: rgba(6, 5, 10, 0.06);
+  --ascii-base: rgba(107, 106, 103, 0.06);
+  --ascii-mid: rgba(232, 101, 74, 0.09);
+  --ascii-bright: rgba(232, 101, 74, 0.22);
+  --ascii-fade: rgba(6, 5, 10, 0.08);
   --nav-bg: rgba(6, 5, 10, 0.7);
   --code-bg: rgba(255, 255, 255, 0.05);
 }
@@ -43,9 +43,9 @@
   --grad-a: rgba(226, 92, 62, 0.06);
   --grad-b: rgba(160, 100, 200, 0.05);
   --grad-c: rgba(60, 130, 200, 0.05);
-  --ascii-base: rgba(0, 0, 0, 0.04);
-  --ascii-mid: rgba(181, 57, 33, 0.07);
-  --ascii-bright: rgba(181, 57, 33, 0.18);
+  --ascii-base: rgba(0, 0, 0, 0.02);
+  --ascii-mid: rgba(181, 57, 33, 0.04);
+  --ascii-bright: rgba(181, 57, 33, 0.10);
   --ascii-fade: rgba(246, 244, 240, 0.12);
   --nav-bg: rgba(246, 244, 240, 0.8);
   --code-bg: rgba(0, 0, 0, 0.04);
@@ -88,6 +88,15 @@ body {
 @keyframes swim1 { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(80px,60px) scale(1.1); } 66% { transform: translate(-40px,30px) scale(0.95); } }
 @keyframes swim2 { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(-60px,40px) scale(1.05); } 66% { transform: translate(30px,-50px) scale(1.1); } }
 @keyframes swim3 { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(50px,-40px) scale(1.08); } 66% { transform: translate(-70px,20px) scale(0.97); } }
+
+/* ===== SHADER BACKGROUND ===== */
+#shader-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
 
 /* ===== ASCII CANVAS ===== */
 #ascii-bg {
@@ -194,37 +203,61 @@ body {
 
 .article-container h1 {
   font-family: var(--serif);
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
   font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-  margin-bottom: 16px;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-bottom: 8px;
 }
 
+/* ===== H2: Major section headings ===== */
 .article-container h2 {
   font-family: var(--serif);
-  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1.25;
-  margin-top: 56px;
-  margin-bottom: 20px;
-  padding-top: 32px;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  margin-top: 72px;
+  margin-bottom: 8px;
+  padding-top: 40px;
+  padding-bottom: 16px;
   border-top: 1px solid var(--border);
+  position: relative;
+}
+
+.article-container h2::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 48px;
+  height: 2px;
+  background: var(--accent);
 }
 
 .article-container h2:first-child,
 .article-container h1 + h2 {
   border-top: none;
   padding-top: 0;
+  margin-top: 8px;
 }
 
+.article-container h2:first-child::before,
+.article-container h1 + h2::before {
+  display: none;
+}
+
+/* ===== H3: Sub-section headings (including the 16 rights) ===== */
 .article-container h3 {
-  font-family: var(--sans);
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-style: italic;
   margin-top: 40px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  color: var(--text);
+  padding-left: 16px;
+  border-left: 2px solid var(--accent);
 }
 
 .article-container p {
@@ -234,8 +267,11 @@ body {
   color: var(--text);
 }
 
+/* Strong text gets a subtle accent treatment */
 .article-container strong {
   font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.005em;
 }
 
 .article-container em {
@@ -247,82 +283,167 @@ body {
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
-  transition: opacity 0.2s;
+  text-decoration-color: var(--accent-glow);
+  transition: text-decoration-color 0.2s, color 0.2s;
 }
 
-.article-container a:hover { opacity: 0.8; }
+.article-container a:hover {
+  text-decoration-color: var(--accent);
+}
 
+/* ===== Lists ===== */
 .article-container ul,
 .article-container ol {
-  margin-bottom: 20px;
-  padding-left: 24px;
+  margin-bottom: 24px;
+  padding-left: 0;
+  list-style: none;
 }
 
 .article-container li {
   font-size: 1.05rem;
   line-height: 1.85;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  padding-left: 24px;
+  position: relative;
 }
 
+.article-container ul > li::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0.85em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.6;
+}
+
+.article-container ol {
+  counter-reset: ol-counter;
+}
+
+.article-container ol > li {
+  counter-increment: ol-counter;
+}
+
+.article-container ol > li::before {
+  content: counter(ol-counter) '.';
+  position: absolute;
+  left: 0;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+  opacity: 0.7;
+  top: 0.2em;
+}
+
+/* ===== Blockquotes ===== */
 .article-container blockquote {
-  border-left: 3px solid var(--accent);
-  padding: 12px 24px;
-  margin: 24px 0;
+  border-left: 2px solid var(--accent);
+  padding: 16px 28px;
+  margin: 32px 0;
   background: var(--surface);
+  border-radius: 0 6px 6px 0;
   color: var(--muted);
+  font-family: var(--serif);
   font-style: italic;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  position: relative;
 }
 
+.article-container blockquote::before {
+  content: '\201C';
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  font-size: 3rem;
+  color: var(--accent);
+  opacity: 0.2;
+  font-family: var(--serif);
+  line-height: 1;
+}
+
+/* ===== Code ===== */
 .article-container code {
   font-family: var(--mono);
-  font-size: 0.9em;
+  font-size: 0.85em;
   background: var(--code-bg);
-  padding: 2px 6px;
+  padding: 3px 7px;
   border-radius: 4px;
+  border: 1px solid var(--border);
 }
 
 .article-container pre {
   background: var(--code-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 20px 24px;
-  margin: 24px 0;
+  padding: 24px 28px;
+  margin: 28px 0;
   overflow-x: auto;
+  position: relative;
+}
+
+.article-container pre::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--accent);
+  opacity: 0.3;
+  border-radius: 8px 0 0 8px;
 }
 
 .article-container pre code {
   background: none;
   padding: 0;
+  border: none;
+  font-size: 0.85rem;
+  line-height: 1.7;
 }
 
+/* ===== Horizontal rules ===== */
 .article-container hr {
   border: none;
   height: 1px;
-  background: linear-gradient(to right, transparent, var(--border), transparent);
-  margin: 48px auto;
-  max-width: 200px;
+  background: linear-gradient(to right, transparent, var(--border), var(--accent-glow), var(--border), transparent);
+  margin: 56px auto;
+  max-width: 240px;
 }
 
+/* ===== Tables ===== */
 .article-container table {
   width: 100%;
   border-collapse: collapse;
-  margin: 24px 0;
+  margin: 28px 0;
   font-size: 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .article-container th,
 .article-container td {
-  padding: 12px 16px;
+  padding: 14px 18px;
   border: 1px solid var(--border);
   text-align: left;
 }
 
 .article-container th {
   background: var(--surface);
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.article-container td {
+  color: var(--text);
 }
 
 /* ===== AUTHOR CARD ===== */

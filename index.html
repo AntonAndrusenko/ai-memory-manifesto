@@ -12,6 +12,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="The AI Memory Manifesto">
   <meta name="twitter:description" content="AI systems are beginning to remember us. This manifesto declares the rights that must govern that memory.">
+  <meta property="og:image" content="https://antonandrusenko.github.io/ai-memory-manifesto/og-image.png">
+  <meta name="twitter:image" content="https://antonandrusenko.github.io/ai-memory-manifesto/og-image.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -38,10 +41,10 @@
       --grad-a: rgba(226, 92, 62, 0.12);
       --grad-b: rgba(120, 60, 180, 0.10);
       --grad-c: rgba(40, 100, 180, 0.08);
-      --ascii-base: rgba(107, 106, 103, 0.13);
-      --ascii-mid: rgba(226, 92, 62, 0.18);
-      --ascii-bright: rgba(226, 92, 62, 0.45);
-      --ascii-fade: rgba(6, 5, 10, 0.06);
+      --ascii-base: rgba(107, 106, 103, 0.06);
+      --ascii-mid: rgba(226, 92, 62, 0.09);
+      --ascii-bright: rgba(226, 92, 62, 0.22);
+      --ascii-fade: rgba(6, 5, 10, 0.08);
       --nav-bg: rgba(6, 5, 10, 0.7);
       --right-hover-text: #fff;
     }
@@ -61,9 +64,9 @@
       --grad-a: rgba(226, 92, 62, 0.06);
       --grad-b: rgba(160, 100, 200, 0.05);
       --grad-c: rgba(60, 130, 200, 0.05);
-      --ascii-base: rgba(0, 0, 0, 0.04);
-      --ascii-mid: rgba(201, 65, 42, 0.07);
-      --ascii-bright: rgba(201, 65, 42, 0.18);
+      --ascii-base: rgba(0, 0, 0, 0.02);
+      --ascii-mid: rgba(201, 65, 42, 0.04);
+      --ascii-bright: rgba(201, 65, 42, 0.10);
       --ascii-fade: rgba(246, 244, 240, 0.12);
       --nav-bg: rgba(246, 244, 240, 0.8);
       --right-hover-text: #1a1917;
@@ -388,33 +391,70 @@
 
     /* ===== BELIEFS ===== */
     .beliefs {
-      text-align: center;
-      max-width: 640px;
+      max-width: 660px;
       margin: 0 auto;
     }
 
-    .beliefs p {
-      font-family: var(--serif);
-      font-size: clamp(1.15rem, 2vw, 1.35rem);
-      line-height: 1.8;
-      margin-bottom: 20px;
-      color: var(--muted);
-      transition: color 0.4s;
+    /* Opening lines — left-aligned, readable body text */
+    .beliefs .beliefs-opening {
+      margin-bottom: 40px;
     }
 
-    .beliefs p.strong-line {
+    .beliefs .beliefs-opening p {
+      font-family: var(--sans);
+      font-size: 1.1rem;
+      line-height: 1.9;
+      margin-bottom: 16px;
       color: var(--text);
-      font-size: clamp(1.3rem, 2.2vw, 1.5rem);
+      opacity: 0.85;
     }
 
-    .beliefs .highlight {
+    .beliefs .beliefs-opening p:first-child {
+      font-family: var(--serif);
+      font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+      line-height: 1.5;
+      color: var(--text);
+      opacity: 1;
+      margin-bottom: 24px;
+    }
+
+    /* Key argument — the pivotal statement, larger and accented */
+    .beliefs .beliefs-pivot {
+      font-family: var(--serif);
+      font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+      line-height: 1.65;
+      color: var(--text);
+      margin-bottom: 48px;
+      padding: 28px 0 28px 24px;
+      border-left: 2px solid var(--accent);
+      position: relative;
+    }
+
+    .beliefs .beliefs-pivot .highlight {
       color: var(--accent);
       font-style: italic;
     }
 
-    .beliefs .final-lines p {
+    /* Final declarations — stacked, bold, centered, like manifesto demands */
+    .beliefs .beliefs-demands {
+      text-align: center;
+      padding-top: 8px;
+    }
+
+    .beliefs .beliefs-demands p {
+      font-family: var(--serif);
+      font-size: clamp(1.15rem, 2vw, 1.35rem);
+      line-height: 1.6;
       color: var(--text);
-      font-weight: 400;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .beliefs .beliefs-demands p:last-child {
+      font-size: clamp(1.3rem, 2.5vw, 1.55rem);
+      color: var(--text);
+      font-style: italic;
+      margin-top: 8px;
     }
 
     /* ===== RIGHTS GRID ===== */
@@ -478,6 +518,31 @@
     }
 
     .right:hover .label { color: var(--right-hover-text); }
+
+    .right-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .right .desc {
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.55;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
+      margin-top: 0;
+    }
+
+    .right:hover .desc {
+      max-height: 80px;
+      opacity: 1;
+      margin-top: 8px;
+    }
 
     /* ===== URGENCY ===== */
     .urgency {
@@ -639,7 +704,11 @@
 </head>
 <body>
 
-  <!-- ANIMATED GRADIENT MESH -->
+  <!-- WEBGL SHADER BACKGROUND -->
+  <canvas id="shader-bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+  <script src="shader.js"></script>
+
+  <!-- ANIMATED GRADIENT MESH (fallback, hidden when shader loads) -->
   <div class="gradient-mesh">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
@@ -697,10 +766,14 @@
 
       <div class="divider"></div>
       <section class="section beliefs reveal">
-        <p>AI systems are beginning to remember us.</p>
-        <p>They remember our preferences, our goals, our habits, our vulnerabilities, and the patterns they infer from everything we say and do.</p>
-        <p class="strong-line">This memory is becoming <span class="highlight">a new layer of digital identity</span> &mdash; one that shapes how systems respond to us, what they assume about us, and what version of us they preserve over time.</p>
-        <div class="final-lines">
+        <div class="beliefs-opening">
+          <p>AI systems are beginning to remember us.</p>
+          <p>They remember our preferences, our goals, our habits, our vulnerabilities, and the patterns they infer from everything we say and do.</p>
+        </div>
+        <div class="beliefs-pivot">
+          This memory is becoming <span class="highlight">a new layer of digital identity</span> &mdash; one that shapes how systems respond to us, what they assume about us, and what version of us they preserve over time.
+        </div>
+        <div class="beliefs-demands">
           <p>That memory must not be trapped by default.</p>
           <p>It must not be owned in silence.</p>
           <p>It must belong to the people whose lives it represents.</p>
@@ -711,22 +784,22 @@
       <section class="section">
         <div class="section-label reveal">Sixteen Rights</div>
         <div class="rights-grid stagger">
-          <div class="right reveal"><div class="right-inner"><span class="num">01</span><span class="label">The right to know</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">02</span><span class="label">The right to access</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">03</span><span class="label">The right to portability</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">04</span><span class="label">The right to distinction</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">05</span><span class="label">The right to provenance</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">06</span><span class="label">The right to correction</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">07</span><span class="label">The right to contest inference</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">08</span><span class="label">The right to deletion</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">09</span><span class="label">The right to expiration</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">10</span><span class="label">The right to selective disclosure</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">11</span><span class="label">The right to user-controlled storage</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">12</span><span class="label">The right to auditability</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">13</span><span class="label">The right to a memory-free mode</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">14</span><span class="label">The right not to be ruled by secret memory</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">15</span><span class="label">The right to meaningful control over reuse</span></div></div>
-          <div class="right reveal"><div class="right-inner"><span class="num">16</span><span class="label">The right to freedom from memory-based manipulation</span></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">01</span><div class="right-text"><span class="label">The right to know</span><span class="desc">Know whether an AI stores memory about you, what kinds, and what it's used for.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">02</span><div class="right-text"><span class="label">The right to access</span><span class="desc">Inspect your full memory in human-legible and machine-readable form.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">03</span><div class="right-text"><span class="label">The right to portability</span><span class="desc">Export and transfer your memory across systems without lock-in or degradation.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">04</span><div class="right-text"><span class="label">The right to distinction</span><span class="desc">Clear separation between stated facts, preferences, summaries, and inferences.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">05</span><div class="right-text"><span class="label">The right to provenance</span><span class="desc">Every memory must carry its origin, how it was produced, and when it changed.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">06</span><div class="right-text"><span class="label">The right to correction</span><span class="desc">Correct false, outdated, or misleading memories about you.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">07</span><div class="right-text"><span class="label">The right to contest inference</span><span class="desc">Challenge inferred memories. No inference should become silent truth.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">08</span><div class="right-text"><span class="label">The right to deletion</span><span class="desc">Delete memories and their derivatives, not just surface-level records.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">09</span><div class="right-text"><span class="label">The right to expiration</span><span class="desc">Memory should not be permanent by default. Define what fades and expires.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">10</span><div class="right-text"><span class="label">The right to selective disclosure</span><span class="desc">Share only the memory needed for a given task or relationship.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">11</span><div class="right-text"><span class="label">The right to user-controlled storage</span><span class="desc">Store your AI memory in your own vaults, devices, or trusted custodians.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">12</span><div class="right-text"><span class="label">The right to auditability</span><span class="desc">See who accessed your memory, when, and for what purpose.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">13</span><div class="right-text"><span class="label">The right to a memory-free mode</span><span class="desc">No one should be forced into persistent memory as the price of using AI.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">14</span><div class="right-text"><span class="label">The right not to be ruled by secret memory</span><span class="desc">No hidden memory profiles influencing outcomes without your visibility.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">15</span><div class="right-text"><span class="label">The right to meaningful control over reuse</span><span class="desc">Memory from one relationship must not be silently repurposed elsewhere.</span></div></div></div>
+          <div class="right reveal"><div class="right-inner"><span class="num">16</span><div class="right-text"><span class="label">The right to freedom from memory-based manipulation</span><span class="desc">No system should use your memory to exploit vulnerabilities or steer choices.</span></div></div></div>
         </div>
       </section>
 
@@ -873,6 +946,9 @@
       }, { passive: true });
     })();
   </script>
+
+  <!-- Hypothesis annotation layer — lets anyone comment on the text -->
+  <script src="https://hypothes.is/embed.js" async></script>
 
 </body>
 </html>

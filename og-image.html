@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 1200px;
+      height: 630px;
+      background: #06050a;
+      color: #e8e6e1;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+    }
+    .orb-1 { width: 500px; height: 500px; background: rgba(226, 92, 62, 0.15); top: -20%; left: -5%; }
+    .orb-2 { width: 400px; height: 400px; background: rgba(120, 60, 180, 0.10); top: 40%; right: -10%; }
+    .orb-3 { width: 350px; height: 350px; background: rgba(40, 100, 180, 0.08); bottom: -10%; left: 30%; }
+
+    .content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #908e8b;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 72px;
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 28px;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: #e8654a;
+    }
+
+    .tagline {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 22px;
+      font-style: italic;
+      color: #908e8b;
+      max-width: 600px;
+      line-height: 1.5;
+      margin-bottom: 48px;
+    }
+
+    .rights {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 900px;
+    }
+
+    .right-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      color: #908e8b;
+      padding: 6px 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .border-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(to right, transparent, #e8654a, transparent);
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="content">
+    <div class="label">A Declaration of Digital Rights</div>
+    <h1>The AI <em>Memory</em><br>Manifesto</h1>
+    <p class="tagline">16 rights over the memory that AI systems build about us.</p>
+    <div class="rights">
+      <span class="right-tag">KNOW</span>
+      <span class="right-tag">ACCESS</span>
+      <span class="right-tag">PORTABILITY</span>
+      <span class="right-tag">CORRECTION</span>
+      <span class="right-tag">DELETION</span>
+      <span class="right-tag">EXPIRATION</span>
+      <span class="right-tag">AUDITABILITY</span>
+      <span class="right-tag">SOVEREIGNTY</span>
+    </div>
+  </div>
+
+  <div class="border-line"></div>
+</body>
+</html>
