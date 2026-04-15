@@ -493,67 +493,41 @@
     .beliefs {
       max-width: 660px;
       margin: 0 auto;
+      font-family: var(--sans);
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--text);
     }
 
-    /* Opening lines — left-aligned, readable body text */
     .beliefs .beliefs-opening {
       margin-bottom: 40px;
     }
 
     .beliefs .beliefs-opening p {
-      font-family: var(--sans);
-      font-size: 1.1rem;
-      line-height: 1.9;
       margin-bottom: 16px;
-      color: var(--text);
-      opacity: 0.85;
     }
 
-    .beliefs .beliefs-opening p:first-child {
-      font-family: var(--serif);
-      font-size: clamp(1.3rem, 2.5vw, 1.6rem);
-      line-height: 1.5;
-      color: var(--text);
-      opacity: 1;
-      margin-bottom: 24px;
-    }
-
-    /* Key argument — the pivotal statement, larger and accented */
     .beliefs .beliefs-pivot {
-      font-family: var(--serif);
-      font-size: clamp(1.25rem, 2.2vw, 1.5rem);
-      line-height: 1.65;
-      color: var(--text);
       margin-bottom: 48px;
-      padding: 28px 0 28px 24px;
+      padding: 24px 0 24px 24px;
       border-left: 2px solid var(--accent);
-      position: relative;
     }
 
     .beliefs .beliefs-pivot .highlight {
       color: var(--accent);
-      font-weight: 600;
     }
 
-    /* Final declarations — stacked, bold, centered, like manifesto demands */
     .beliefs .beliefs-demands {
       text-align: center;
       padding-top: 8px;
     }
 
     .beliefs .beliefs-demands p {
-      font-family: var(--serif);
-      font-size: clamp(1.15rem, 2vw, 1.35rem);
-      line-height: 1.6;
-      color: var(--text);
       margin-bottom: 12px;
-      letter-spacing: -0.01em;
     }
 
     .beliefs .beliefs-demands p:last-child {
-      font-size: clamp(1.3rem, 2.5vw, 1.55rem);
-      color: var(--text);
-      font-weight: 600;
+      font-weight: 500;
       margin-top: 8px;
     }
 
@@ -783,7 +757,7 @@
     .mr-chat {
       width: 100%;
       max-width: 680px;
-      margin-bottom: 64px;
+      margin-bottom: 24px;
       padding-top: 28px;
     }
 
@@ -935,11 +909,11 @@
     /* Fragment stream */
     .mr-stream {
       width: 100%;
-      max-width: 400px;
-      height: 280px;
+      max-width: 600px;
+      height: 180px;
       position: relative;
       overflow: hidden;
-      margin-bottom: 32px;
+      margin-bottom: 16px;
     }
 
     .mr-pill {
@@ -954,7 +928,7 @@
       white-space: nowrap;
       box-shadow: 0 0 12px var(--accent-glow);
       opacity: 0;
-      animation: mrDrift 4s ease-in forwards;
+      animation: mrDrift 3s ease-in forwards;
       pointer-events: none;
     }
 
@@ -967,7 +941,7 @@
       0%   { opacity: 0; transform: translateY(0); }
       10%  { opacity: 0.9; }
       80%  { opacity: 0.6; }
-      100% { opacity: 0; transform: translateY(260px); }
+      100% { opacity: 0; transform: translateY(160px); }
     }
 
     /* Fork */
@@ -977,7 +951,7 @@
       gap: 12px;
       width: 100%;
       max-width: 680px;
-      margin-bottom: 40px;
+      margin-bottom: 24px;
     }
 
     .mr-fork-line {
@@ -1213,7 +1187,7 @@
       }
 
       .mr-stream {
-        max-width: 280px;
+        max-width: 340px;
       }
     }
 
@@ -1694,20 +1668,37 @@
         }, holdTime);
       }
 
+      var bonusPills = [
+        'preference: dark mode', 'tone: vulnerable', 'context: seeking help',
+        'trust: high openness', 'pattern: late night', 'mood: anxious',
+        'goal: clarity', 'need: emotional support', 'topic: career',
+        'behavior: oversharing', 'frequency: daily user', 'style: long messages'
+      ];
+      var bonusIdx = 0;
+
       function emitPills(msg) {
         var stream = document.querySelector('.mr-stream');
         if (!stream) return;
 
-        msg.highlights.forEach(function (h, i) {
+        var allPills = msg.highlights.map(function (h) {
+          return h.label + ': ' + h.phrase.split(' ').slice(0, 3).join(' ');
+        });
+        // Add 2-3 bonus inferred pills per message
+        for (var b = 0; b < 2 + Math.floor(Math.random() * 2); b++) {
+          allPills.push(bonusPills[bonusIdx % bonusPills.length]);
+          bonusIdx++;
+        }
+
+        allPills.forEach(function (text, i) {
           setTimeout(function () {
             var pill = document.createElement('span');
             pill.className = 'mr-pill';
-            pill.textContent = h.label + ': ' + h.phrase.split(' ').slice(0, 3).join(' ');
-            pill.style.left = (20 + Math.random() * 60) + '%';
+            pill.textContent = text;
+            pill.style.left = (10 + Math.random() * 75) + '%';
             pill.style.top = '0px';
             stream.appendChild(pill);
             pill.addEventListener('animationend', function () { pill.remove(); });
-          }, i * 300);
+          }, i * 200);
         });
       }
 
