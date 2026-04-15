@@ -17,11 +17,11 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ===== THEME VARIABLES ===== */
     :root {
-      --serif: 'Instrument Serif', Georgia, serif;
+      --serif: 'Outfit', -apple-system, sans-serif;
       --mono: 'JetBrains Mono', 'SF Mono', monospace;
       --sans: 'DM Sans', -apple-system, sans-serif;
     }
@@ -319,14 +319,15 @@
     }
 
     .hero h1 em {
-      font-style: italic;
+      font-style: normal;
+      font-weight: 700;
       color: var(--accent);
     }
 
     .hero .tagline {
-      font-family: var(--serif);
-      font-size: clamp(1.1rem, 2vw, 1.35rem);
-      font-style: italic;
+      font-family: var(--sans);
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+      font-weight: 400;
       color: var(--muted);
       max-width: 520px;
       line-height: 1.6;
@@ -432,7 +433,7 @@
 
     .beliefs .beliefs-pivot .highlight {
       color: var(--accent);
-      font-style: italic;
+      font-weight: 600;
     }
 
     /* Final declarations — stacked, bold, centered, like manifesto demands */
@@ -453,7 +454,7 @@
     .beliefs .beliefs-demands p:last-child {
       font-size: clamp(1.3rem, 2.5vw, 1.55rem);
       color: var(--text);
-      font-style: italic;
+      font-weight: 600;
       margin-top: 8px;
     }
 
@@ -557,7 +558,7 @@
     .urgency .window {
       font-family: var(--serif);
       font-size: clamp(1.3rem, 2.5vw, 1.6rem);
-      font-style: italic;
+      font-weight: 600;
       color: var(--text);
       margin-top: 12px;
     }
@@ -571,8 +572,7 @@
     .closing-line {
       font-family: var(--serif);
       font-size: clamp(1.8rem, 4vw, 3rem);
-      font-style: italic;
-      font-weight: 400;
+      font-weight: 300;
       letter-spacing: -0.02em;
       line-height: 1.3;
       margin-bottom: 56px;
