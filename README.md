@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="https://antonandrusenko.github.io/ai-memory-manifesto/og-image.png" alt="The AI Memory Manifesto — 16 rights over the memory that AI systems build about us" width="700">
+  <a href="https://antonandrusenko.github.io/ai-memory-manifesto/">
+    <img src="docs/screenshots/website-cover.png" alt="The AI Memory Manifesto — 16 rights over the memory that AI systems build about us" width="700">
+  </a>
 </p>
 
 <h1 align="center">The AI Memory Manifesto</h1>
