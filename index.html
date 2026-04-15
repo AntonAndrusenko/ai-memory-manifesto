@@ -1072,12 +1072,27 @@
       align-items: center;
       justify-content: center;
       gap: 12px;
+      cursor: pointer;
+      transition: backdrop-filter 0.6s ease, -webkit-backdrop-filter 0.6s ease, background 0.6s ease;
+    }
+
+    .mr-vault:hover .mr-vault-frost {
+      backdrop-filter: blur(1px);
+      -webkit-backdrop-filter: blur(1px);
+      background: transparent;
+    }
+
+    .mr-vault:hover .mr-vault-frost .mr-lock-lg,
+    .mr-vault:hover .mr-vault-frost span {
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
     .mr-lock-lg {
       width: 40px;
       height: 40px;
       color: var(--dim);
+      transition: opacity 0.4s ease;
     }
 
     .mr-vault-frost span {
@@ -1085,6 +1100,7 @@
       font-size: 0.75rem;
       color: var(--dim);
       letter-spacing: 0.08em;
+      transition: opacity 0.4s ease;
     }
 
     .mr-vault-footer {
