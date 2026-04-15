@@ -522,26 +522,20 @@
     .right-text {
       display: flex;
       flex-direction: column;
-      gap: 0;
+      gap: 6px;
     }
 
     .right .desc {
       font-family: var(--sans);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 400;
-      color: var(--muted);
-      line-height: 1.55;
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
-      margin-top: 0;
+      color: var(--dim);
+      line-height: 1.5;
+      transition: color 0.3s;
     }
 
     .right:hover .desc {
-      max-height: 80px;
-      opacity: 1;
-      margin-top: 8px;
+      color: var(--muted);
     }
 
     /* ===== URGENCY ===== */
