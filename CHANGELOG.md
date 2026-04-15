@@ -2,6 +2,17 @@
 
 All notable changes to The AI Memory Manifesto will be documented in this file.
 
+## [1.0.0] - 2026-04-15
+
+### v1.0.0 release
+
+- **README rewritten** as a proper project landing page: social preview, call to action, v1.0.0 announcement, direct links to all documents
+- **Community sections added**: Who this is for, How to contribute, Open questions, Endorsements/adopters, Cite this work
+- **Interactive website launched** at [antonandrusenko.github.io/ai-memory-manifesto](https://antonandrusenko.github.io/ai-memory-manifesto/) with dark/light themes, full manifesto, and memory lock-in scroll-reveal visual
+- **Memory lock-in visual** added to website: interactive demonstration of the asymmetry between what providers capture vs. what users can export
+- **Social preview image** created for link sharing across platforms
+- **All four core documents finalized**: Manifesto (16 rights, 12 principles), Terminology (30+ definitions), Evidence (8 providers, 41 sources), Landscape (6 standards, 5 OSS projects, EU/US regulation)
+
 ## [0.2.0] - 2025-04-15
 
 ### Evidence sourcing and verification
