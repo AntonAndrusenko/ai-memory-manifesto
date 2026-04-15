@@ -28,6 +28,7 @@
     'uniform float u_time;',
     'uniform vec2 u_res;',
     'uniform float u_dark;',
+    'uniform vec2 u_mouse;',  // 0..1 normalized mouse position
 
     // Simplex noise
     'vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}',
@@ -115,6 +116,16 @@
     '  dark_col += s_rust * wisps * 0.15;',
     '  dark_col += s_glow * pow(max(0.0, n4), 3.0) * grad * 0.2;',
 
+    // Mouse interaction — warm glow that follows cursor
+    '  vec2 mp = vec2(u_mouse.x * aspect, u_mouse.y);',
+    '  float mDist = length(p - mp);',
+    '  float mGlow = smoothstep(0.5, 0.0, mDist);',
+    '  dark_col = mix(dark_col, s_rust, mGlow * 0.35);',
+    '  dark_col = mix(dark_col, s_amber, mGlow * mGlow * 0.2);',
+    // Warp noise near cursor
+    '  float mWarp = fbm(p * 2.0 + mp * 3.0 + vec2(t));',
+    '  dark_col += s_glow * mWarp * mGlow * 0.08;',
+
     // Subtle top-area purple nebula
     '  float nebula = smoothstep(0.7, 0.0, length(p - vec2(aspect*0.6, 0.85) + vec2(sin(t*0.3)*0.4, 0.0)));',
     '  dark_col = mix(dark_col, s_plum, nebula * 0.3);',
@@ -148,6 +159,14 @@
     // Mercury-like caustic reflections
     '  float caustic = pow(max(0.0, sin(ln3 * 8.0 + ln1 * 4.0 + t * 1.5)), 4.0);',
     '  light_col += (l_reflect - l_base) * caustic * 0.15;',
+
+    // Mouse interaction — bright reflection pool at cursor
+    '  vec2 lmp = vec2(u_mouse.x * aspect, u_mouse.y);',
+    '  float lmDist = length(p - lmp);',
+    '  float lmGlow = smoothstep(0.45, 0.0, lmDist);',
+    '  light_col = mix(light_col, l_reflect, lmGlow * 0.4);',
+    '  float lmRipple = sin(lmDist * 20.0 - u_time * 0.15) * 0.5 + 0.5;',
+    '  light_col = mix(light_col, l_shadow, lmGlow * lmRipple * 0.15);',
 
     // Subtle silver shimmer
     '  float shimmer = pow(max(0.0, snoise(p * 5.0 + vec2(t * 0.8, t * 0.6))), 3.0);',
@@ -194,6 +213,22 @@
   var uTime = gl.getUniformLocation(prog, 'u_time');
   var uRes = gl.getUniformLocation(prog, 'u_res');
   var uDark = gl.getUniformLocation(prog, 'u_dark');
+  var uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // Smooth mouse tracking
+  var mouseX = 0.5, mouseY = 0.5; // Current (smoothed)
+  var targetX = 0.5, targetY = 0.5; // Target (raw)
+
+  window.addEventListener('mousemove', function (e) {
+    targetX = e.clientX / window.innerWidth;
+    targetY = 1.0 - (e.clientY / window.innerHeight); // Flip Y for GL
+  }, { passive: true });
+
+  window.addEventListener('touchmove', function (e) {
+    var touch = e.touches[0];
+    targetX = touch.clientX / window.innerWidth;
+    targetY = 1.0 - (touch.clientY / window.innerHeight);
+  }, { passive: true });
 
   function resize() {
     var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -216,10 +251,15 @@
 
   function render() {
     frame++;
+    // Smooth mouse interpolation (ease toward target)
+    mouseX += (targetX - mouseX) * 0.04;
+    mouseY += (targetY - mouseY) * 0.04;
+
     if (frame % 2 === 0) {
       gl.uniform1f(uTime, (performance.now() - startTime) / 1000.0);
       gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.uniform1f(uDark, isDark());
+      gl.uniform2f(uMouse, mouseX, mouseY);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
     requestAnimationFrame(render);
