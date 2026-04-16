@@ -1791,19 +1791,19 @@
 
       // State machine: idle -> typing -> analyzing -> sending -> idle
       var state = 'idle';
-      var targetAlpha = 0.12;   // current target overall brightness
-      var currentAlpha = 0.12;  // smoothed brightness
-      var targetSpeed = 0.8;
-      var currentSpeed = 0.8;
-      var targetDensity = 0.45;
-      var currentDensity = 0.45;
+      var targetAlpha = 0;
+      var currentAlpha = 0;
+      var targetSpeed = 0.4;
+      var currentSpeed = 0.4;
+      var targetDensity = 0;
+      var currentDensity = 0;
 
       // State parameters
       var states = {
-        idle:      { alpha: 0.12, speed: 0.8, density: 0.45 },
-        typing:    { alpha: 0.22, speed: 1.4, density: 0.65 },
-        analyzing: { alpha: 0.40, speed: 2.2, density: 0.85 },
-        sending:   { alpha: 0.60, speed: 3.5, density: 1.0 }
+        idle:      { alpha: 0, speed: 0.4, density: 0 },
+        typing:    { alpha: 0, speed: 0.4, density: 0 },
+        analyzing: { alpha: 0, speed: 0.4, density: 0 },
+        sending:   { alpha: 0.55, speed: 3.0, density: 0.95 }
       };
 
       window.mrDataflowState = function (s) {
