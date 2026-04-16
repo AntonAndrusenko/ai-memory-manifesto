@@ -2619,8 +2619,105 @@
         return r + ',' + g + ',' + b;
       }
 
-      function drawFibers(rgb) { /* Task 2 */ }
-      function drawScanLines(rgb) { /* Task 3 */ }
+      function drawFibers(rgb) {
+        for (var i = 0; i < fibers.length; i++) {
+          var f = fibers[i];
+
+          // Proximity glow: check distance to each fragment
+          var glowTarget = 0;
+          for (var fi = 0; fi < dataFragments.length; fi++) {
+            var dist = Math.abs(dataFragments[fi].x - f.x);
+            if (dist < 40) {
+              glowTarget = Math.max(glowTarget, 1 - dist / 40);
+            }
+          }
+          // Smooth glow: rise fast, decay slow
+          if (glowTarget > fiberGlow[i]) {
+            fiberGlow[i] += (glowTarget - fiberGlow[i]) * 0.3;
+          } else {
+            fiberGlow[i] *= 0.87; // decay over ~8 frames
+          }
+
+          var isCenter = (f.w > 1);
+          var baseAlpha = isCenter ? 0.18 : 0.13;
+          var peakAlpha = (baseAlpha + fiberGlow[i] * baseAlpha) * currentAlpha;
+
+          if (peakAlpha < 0.005) continue;
+
+          // Vertical gradient: transparent -> peak -> transparent
+          var grad = ctx.createLinearGradient(f.x, 0, f.x, H);
+          grad.addColorStop(0, 'rgba(' + rgb + ',0)');
+          grad.addColorStop(0.3, 'rgba(' + rgb + ',' + peakAlpha + ')');
+          grad.addColorStop(0.5, 'rgba(' + rgb + ',' + peakAlpha + ')');
+          grad.addColorStop(0.7, 'rgba(' + rgb + ',' + peakAlpha + ')');
+          grad.addColorStop(1, 'rgba(' + rgb + ',0)');
+
+          ctx.fillStyle = grad;
+          ctx.fillRect(f.x - f.w / 2, 0, f.w, H);
+        }
+      }
+      function drawScanLines(rgb) {
+        for (var i = 0; i < scanLines.length; i++) {
+          var sl = scanLines[i];
+
+          // Drift downward during sending
+          if (currentAlpha > 0.1) {
+            sl.y += 0.3;
+            if (sl.y - sl.baseY > 15) {
+              sl.y = sl.baseY;
+            }
+          } else {
+            sl.y = sl.baseY; // reset when idle
+          }
+
+          var lineAlpha = sl.peakAlpha * currentAlpha;
+          if (lineAlpha < 0.005) continue;
+
+          // Main scan line: horizontal gradient, transparent at edges
+          var edgeFade = 0.05 + i * 0.02; // deeper lines have wider visible region
+          var grad = ctx.createLinearGradient(0, sl.y, W, sl.y);
+          grad.addColorStop(0, 'rgba(' + rgb + ',0)');
+          grad.addColorStop(edgeFade, 'rgba(' + rgb + ',' + lineAlpha * 0.5 + ')');
+          grad.addColorStop(0.5, 'rgba(' + rgb + ',' + lineAlpha + ')');
+          grad.addColorStop(1 - edgeFade, 'rgba(' + rgb + ',' + lineAlpha * 0.5 + ')');
+          grad.addColorStop(1, 'rgba(' + rgb + ',0)');
+
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, sl.y - 0.5, W, 1);
+
+          // Glow for deeper lines (use a wider faint rect instead of shadowBlur)
+          if (sl.glowSpread > 0) {
+            var glowGrad = ctx.createLinearGradient(0, sl.y - sl.glowSpread, 0, sl.y + sl.glowSpread);
+            glowGrad.addColorStop(0, 'rgba(' + rgb + ',0)');
+            glowGrad.addColorStop(0.5, 'rgba(' + rgb + ',' + lineAlpha * 0.12 + ')');
+            glowGrad.addColorStop(1, 'rgba(' + rgb + ',0)');
+
+            ctx.fillStyle = glowGrad;
+            ctx.fillRect(0, sl.y - sl.glowSpread, W, sl.glowSpread * 2);
+          }
+
+          // Local brightening from fragment intersections — decay existing
+          var brights = scanLineBrightness[i];
+          for (var bi = brights.length - 1; bi >= 0; bi--) {
+            brights[bi].intensity *= 0.85; // decay over ~8 frames
+            if (brights[bi].intensity < 0.02) {
+              brights.splice(bi, 1);
+              continue;
+            }
+            // Render bright spot: 100px wide gaussian-ish blob
+            var bx = brights[bi].x;
+            var bAlpha = lineAlpha * 0.5 * brights[bi].intensity * currentAlpha;
+            var bGrad = ctx.createLinearGradient(bx - 50, sl.y, bx + 50, sl.y);
+            bGrad.addColorStop(0, 'rgba(' + rgb + ',0)');
+            bGrad.addColorStop(0.3, 'rgba(' + rgb + ',' + bAlpha + ')');
+            bGrad.addColorStop(0.5, 'rgba(' + rgb + ',' + bAlpha * 1.5 + ')');
+            bGrad.addColorStop(0.7, 'rgba(' + rgb + ',' + bAlpha + ')');
+            bGrad.addColorStop(1, 'rgba(' + rgb + ',0)');
+            ctx.fillStyle = bGrad;
+            ctx.fillRect(bx - 50, sl.y - 1, 100, 2);
+          }
+        }
+      }
       function updateAndDrawFragments(rgb) { /* Task 4 */ }
       function drawHotspot(rgb) { /* Task 5 */ }
 
