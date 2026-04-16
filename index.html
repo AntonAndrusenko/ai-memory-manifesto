@@ -911,7 +911,14 @@
 
     /* User input mode */
     .mr-chat-box.user-mode {
-      border-color: rgba(232, 101, 74, 0.4);
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent-glow), 0 0 60px rgba(232, 101, 74, 0.06);
+      animation: mrAuroraGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes mrAuroraGlow {
+      0%, 100% { box-shadow: 0 0 20px var(--accent-glow), 0 0 60px rgba(232, 101, 74, 0.06); }
+      50%      { box-shadow: 0 0 30px var(--accent-glow), 0 0 80px rgba(232, 101, 74, 0.1); }
     }
 
     .mr-user-input {
@@ -938,9 +945,12 @@
       display: block;
     }
 
-    .mr-chat-box.user-mode .mr-msg-area,
-    .mr-chat-box.user-mode .mr-placeholder {
+    .mr-chat-box.user-mode .mr-msg-area {
       display: none;
+    }
+
+    .mr-chat-box.user-mode .mr-placeholder {
+      visibility: hidden;
     }
 
     .mr-try-prompt {
@@ -1778,7 +1788,7 @@
           </button>
           <span class="mr-placeholder">Message AI...</span>
           <button class="mr-send" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l-1.41 1.41L16.17 9H4v2h12.17l-5.58 5.59L12 18l8-8z" transform="rotate(-90 12 12)"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
           </button>
         </div>
       </div>
@@ -1883,8 +1893,6 @@
         <div class="mr-export-footer">3 items visible to you &middot; Last updated: 47 days ago</div>
       </div>
       </div>
-
-    </div>
 
     </div>
 
