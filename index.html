@@ -911,7 +911,7 @@
 
     /* User input mode */
     .mr-chat-box.user-mode {
-      border-color: var(--accent);
+      border-color: rgba(232, 101, 74, 0.4);
     }
 
     .mr-user-input {
@@ -925,18 +925,20 @@
       color: var(--text);
       resize: none;
       outline: none;
-      min-height: 3.2em;
+      min-height: 1.6em;
+      max-height: 4.8em;
       padding: 0;
+    }
+
+    .mr-user-input:focus-visible {
+      outline: none;
     }
 
     .mr-chat-box.user-mode .mr-user-input {
       display: block;
     }
 
-    .mr-chat-box.user-mode .mr-msg-area {
-      display: none;
-    }
-
+    .mr-chat-box.user-mode .mr-msg-area,
     .mr-chat-box.user-mode .mr-placeholder {
       display: none;
     }
@@ -1536,13 +1538,16 @@
       opacity: 0;
       transform: translateY(12px);
       transition: opacity 0.6s ease, transform 0.6s ease;
-      display: none;
+      max-height: 0;
+      overflow: hidden;
+      pointer-events: none;
     }
 
     .claim-result.visible {
-      display: block;
       opacity: 1;
       transform: translateY(0);
+      max-height: 600px;
+      pointer-events: auto;
     }
 
     .claim-preview {
@@ -2051,6 +2056,7 @@
       ];
 
       var msgIndex = 0;
+      var cycleId = 0; // Increments when user takes over, cancels pending auto-cycle callbacks
 
       function showPlaceholder(show) {
         if (placeholder) placeholder.classList.toggle('visible', show);
@@ -2058,6 +2064,8 @@
       }
 
       function typeMessage() {
+        if (userMode) return;
+        var myCycle = cycleId;
         var msg = messages[msgIndex];
         showPlaceholder(false);
         if (window.mrDataflowState) window.mrDataflowState('typing');
@@ -2069,7 +2077,7 @@
         var charIndex = 0;
 
         function typeChar() {
-          if (userMode) return;
+          if (userMode || cycleId !== myCycle) return;
           if (charIndex < msg.text.length) {
             var textNode = document.createTextNode(msg.text[charIndex]);
             msgArea.insertBefore(textNode, cursor);
@@ -2091,6 +2099,7 @@
       }
 
       function applyHighlights(msg) {
+        var myCycle = cycleId;
         var cursor = msgArea.querySelector('.mr-cursor');
         var fullText = msg.text;
 
@@ -2131,15 +2140,23 @@
         var labels = msgArea.querySelectorAll('.mr-label');
         if (window.mrDataflowState) window.mrDataflowState('analyzing');
         labels.forEach(function (label, i) {
-          setTimeout(function () { label.classList.add('visible'); }, i * 350);
+          setTimeout(function () {
+            if (cycleId !== myCycle) return;
+            label.classList.add('visible');
+          }, i * 350);
         });
 
         var holdTime = labels.length * 350 + 1500;
-        setTimeout(function () { emitPills(msg); }, holdTime - 800);
+        setTimeout(function () {
+          if (cycleId !== myCycle) return;
+          emitPills(msg);
+        }, holdTime - 800);
 
         setTimeout(function () {
+          if (cycleId !== myCycle) return;
           msgArea.style.opacity = '0';
           setTimeout(function () {
+            if (cycleId !== myCycle) return;
             msgArea.style.opacity = '1';
             msgIndex = (msgIndex + 1) % messages.length;
             showPlaceholder(true);
@@ -2215,26 +2232,21 @@
         var lowerText = text.toLowerCase();
         var found = [];
         keywords.forEach(function (kw) {
-          kw.patterns.forEach(function (pattern) {
-            var idx = lowerText.indexOf(pattern.toLowerCase());
-            if (idx !== -1) {
-              // Find the actual text span in original
-              var actualPhrase = text.substring(idx, idx + pattern.length);
-              // Extend to word boundaries
-              var start = idx;
-              var end = idx + pattern.length;
-              while (start > 0 && text[start - 1] !== ' ') start--;
-              while (end < text.length && text[end] !== ' ' && text[end] !== '.' && text[end] !== ',') end++;
-              var extPhrase = text.substring(start, end);
-              // Avoid duplicates
+          if (found.length >= 3) return;
+          for (var p = 0; p < kw.patterns.length; p++) {
+            var pattern = kw.patterns[p].toLowerCase();
+            // Use word-boundary matching via regex
+            var re = new RegExp('\\b' + pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+            var match = text.match(re);
+            if (match) {
               if (!found.some(function (f) { return f.label === kw.label; })) {
-                found.push({ phrase: extPhrase, label: kw.label });
+                found.push({ phrase: match[0], label: kw.label });
               }
+              break;
             }
-          });
+          }
         });
-        // Cap at 4 highlights
-        return found.slice(0, 4);
+        return found;
       }
 
       function processUserMessage() {
@@ -2242,39 +2254,76 @@
         var text = userInput.value.trim();
         var highlights = analyzeUserText(text);
 
-        // Switch back to msg area display for highlight rendering
+        // Switch from textarea back to msg-area for highlight rendering
         chatBox.classList.remove('user-mode');
+        showPlaceholder(false);
         var msg = { text: text, highlights: highlights };
 
-        // Clear and show the text with highlights
+        // Build highlighted DOM inline (don't call applyHighlights — it has auto-cycle logic)
         var cursor = msgArea.querySelector('.mr-cursor');
         while (msgArea.firstChild) msgArea.removeChild(msgArea.firstChild);
-        msgArea.appendChild(document.createTextNode(text));
+
+        var regions = [];
+        highlights.forEach(function (h) {
+          var idx = text.indexOf(h.phrase);
+          if (idx !== -1) {
+            regions.push({ start: idx, end: idx + h.phrase.length, label: h.label, phrase: h.phrase });
+          }
+        });
+        regions.sort(function (a, b) { return a.start - b.start; });
+
+        var pos = 0;
+        regions.forEach(function (r) {
+          if (r.start > pos) msgArea.appendChild(document.createTextNode(text.slice(pos, r.start)));
+          var hlSpan = document.createElement('span');
+          hlSpan.className = 'mr-highlight';
+          var labelSpan = document.createElement('span');
+          labelSpan.className = 'mr-label';
+          labelSpan.textContent = r.label;
+          hlSpan.appendChild(labelSpan);
+          hlSpan.appendChild(document.createTextNode(r.phrase));
+          msgArea.appendChild(hlSpan);
+          pos = r.end;
+        });
+        if (pos < text.length) msgArea.appendChild(document.createTextNode(text.slice(pos)));
         msgArea.appendChild(cursor);
 
-        setTimeout(function () { applyHighlights(msg); }, 400);
+        // Reveal labels with stagger
+        if (window.mrDataflowState) window.mrDataflowState('analyzing');
+        var labels = msgArea.querySelectorAll('.mr-label');
+        labels.forEach(function (label, i) {
+          setTimeout(function () { label.classList.add('visible'); }, i * 350);
+        });
+
+        var holdTime = Math.max(labels.length, 1) * 350 + 1500;
+
+        // Trigger the send pipeline (fork pulse, rain, vault pills)
+        setTimeout(function () { emitPills(msg); }, holdTime - 800);
+
+        // Fade out, clear, return to user input mode
+        setTimeout(function () {
+          msgArea.style.opacity = '0';
+          setTimeout(function () {
+            msgArea.style.opacity = '1';
+            while (msgArea.firstChild) msgArea.removeChild(msgArea.firstChild);
+            msgArea.appendChild(cursor);
+            userInput.value = '';
+            chatBox.classList.add('user-mode');
+            if (sendBtn) sendBtn.classList.remove('active');
+            if (window.mrDataflowState) window.mrDataflowState('idle');
+            userInput.focus();
+          }, 400);
+        }, holdTime);
       }
-
-      // Show "try it yourself" prompt after 2 full auto cycles
-      var cycleCount = 0;
-      var origTypeMessage = typeMessage;
-
-      // Show try prompt after first cycle completes
-      function showTryPrompt() {
-        if (tryPrompt && !userMode) {
-          tryPrompt.classList.add('visible');
-        }
-      }
-
-      // Intercept to count cycles
-      var origShowPlaceholder = showPlaceholder;
 
       // Click to activate user mode
       if (chatBox) {
         chatBox.addEventListener('click', function (e) {
           if (userMode || e.target === sendBtn || sendBtn.contains(e.target)) return;
           userMode = true;
+          cycleId++; // Invalidate all pending auto-cycle callbacks
           chatBox.classList.add('user-mode');
+          msgArea.style.opacity = '1'; // Reset in case a fade was in progress
           if (tryPrompt) tryPrompt.classList.remove('visible');
           if (window.mrDataflowState) window.mrDataflowState('idle');
           userInput.focus();
@@ -2316,8 +2365,10 @@
 
       if (chatEl) observer.observe(chatEl);
 
-      // Show try prompt after 2 message cycles
-      setTimeout(showTryPrompt, 18000);
+      // Show try prompt after 2 message cycles (~16s)
+      setTimeout(function () {
+        if (tryPrompt && !userMode) tryPrompt.classList.add('visible');
+      }, 16000);
     })();
 
     // ===== MEMORY REVEAL: MATRIX DATAFLOW CANVAS =====
@@ -2583,8 +2634,8 @@
           revealIndex++;
         }
 
-        // Show profile card once all pills revealed
-        if (revealIndex >= pills.length && !profileShown && profileCard) {
+        // Show profile card after enough pills are revealed for a credible synthesis
+        if (revealIndex >= 20 && !profileShown && profileCard) {
           profileShown = true;
           setTimeout(function () {
             profileCard.classList.add('visible');
@@ -2607,6 +2658,20 @@
           requestAnimationFrame(tick);
         }
       };
+
+      // Reveal profile card when scrolled into view (fallback for fast scrollers)
+      if (profileCard) {
+        var profileObs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting && !profileShown) {
+              profileShown = true;
+              profileCard.classList.add('visible');
+              profileObs.disconnect();
+            }
+          });
+        }, { threshold: 0.3 });
+        profileObs.observe(profileCard);
+      }
 
       // Pre-reveal first 8 pills when section enters viewport
       var section = document.querySelector('.memory-reveal');
