@@ -736,19 +736,74 @@
 
     /* ===== MEMORY LOCK-IN REVEAL ===== */
     .memory-reveal {
-      padding: 0 0 100px;
+      --mr-scroll-distance: 500vh;
+      height: var(--mr-scroll-distance);
       margin-top: -60px;
       position: relative;
     }
 
+    .mr-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .mr-container {
       max-width: 720px;
-      margin: 0 auto;
+      width: 100%;
       padding: 0 28px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      max-height: 100%;
     }
+
+    /* Scroll-driven: elements start invisible, JS controls opacity */
+    .mr-scroll-driven .mr-opener,
+    .mr-scroll-driven .mr-chat,
+    .mr-scroll-driven .mr-stream,
+    .mr-scroll-driven .mr-fork,
+    .mr-scroll-driven .mr-split,
+    .mr-scroll-driven .mr-profile,
+    .mr-scroll-driven .mr-punchline,
+    .mr-scroll-driven .mr-transition {
+      opacity: 0;
+    }
+
+    /* Tighter spacing inside sticky stage */
+    .mr-stage .mr-opener { margin-bottom: 20px; }
+    .mr-stage .mr-chat { margin-bottom: 12px; padding-top: 16px; }
+    .mr-stage .mr-stream { height: 120px; margin-bottom: 8px; }
+    .mr-stage .mr-fork { margin-bottom: 12px; }
+    .mr-stage .mr-split { margin-bottom: 16px; }
+
+    /* Profile card overlays vault in scroll mode */
+    .mr-stage .mr-profile {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 12%;
+      max-width: 680px;
+      margin: 0 auto;
+      z-index: 3;
+    }
+
+    /* Punchline + transition overlay bottom in scroll mode */
+    .mr-stage .mr-punchline,
+    .mr-stage .mr-transition {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      max-width: 520px;
+      margin: 0 auto;
+      z-index: 4;
+    }
+    .mr-stage .mr-punchline { bottom: 18%; }
+    .mr-stage .mr-transition { bottom: 12%; }
 
     .mr-opener {
       font-family: var(--serif);
@@ -1434,6 +1489,13 @@
         max-width: 100%;
         height: 120px;
       }
+
+      .memory-reveal { --mr-scroll-distance: 400vh; }
+      .mr-stage .mr-stream { height: 80px; }
+      .mr-stage .mr-chat { padding-top: 8px; }
+      .mr-stage .mr-profile { bottom: 8%; left: 16px; right: 16px; }
+      .mr-stage .mr-punchline { bottom: 14%; left: 16px; right: 16px; }
+      .mr-stage .mr-transition { bottom: 8%; left: 16px; right: 16px; }
     }
 
     /* ===== SCROLL REVEAL ===== */
@@ -1667,6 +1729,36 @@
         animation: none;
         transform: none;
       }
+
+      /* Scroll-driven section falls back to normal flow */
+      .memory-reveal {
+        height: auto !important;
+      }
+      .mr-stage {
+        position: relative;
+        height: auto;
+        overflow: visible;
+      }
+      .mr-stage .mr-profile,
+      .mr-stage .mr-punchline,
+      .mr-stage .mr-transition {
+        position: relative;
+        left: auto; right: auto; bottom: auto;
+      }
+      .mr-scroll-driven .mr-opener,
+      .mr-scroll-driven .mr-chat,
+      .mr-scroll-driven .mr-stream,
+      .mr-scroll-driven .mr-fork,
+      .mr-scroll-driven .mr-split,
+      .mr-scroll-driven .mr-profile,
+      .mr-scroll-driven .mr-punchline,
+      .mr-scroll-driven .mr-transition {
+        opacity: 1 !important;
+      }
+      .mr-profile {
+        opacity: 1 !important;
+        transform: none !important;
+      }
     }
   </style>
 </head>
@@ -1768,13 +1860,14 @@
     <div class="mr-progress-fill" id="mr-progress-fill"></div>
     <span class="mr-progress-label">data extraction</span>
   </div>
+  <div class="mr-stage">
   <div class="mr-container">
 
     <!-- Opener -->
-    <p class="mr-opener reveal">You share everything. Here&rsquo;s what you get back.</p>
+    <p class="mr-opener">You share everything. Here&rsquo;s what you get back.</p>
 
     <!-- Chat Input Simulation -->
-    <div class="mr-chat reveal">
+    <div class="mr-chat">
       <div class="mr-chat-box">
         <div class="mr-chat-messages">
           <div class="mr-msg-area">
@@ -1796,19 +1889,19 @@
     </div>
 
     <!-- Fragment Stream -->
-    <div class="mr-stream reveal">
+    <div class="mr-stream">
       <canvas id="mr-dataflow" role="img" aria-label="Visualization of personal data flowing from your conversation to the AI provider's memory vault"></canvas>
     </div>
 
     <!-- Fork point -->
-    <div class="mr-fork reveal">
+    <div class="mr-fork">
       <div class="mr-fork-line"></div>
       <svg class="mr-fork-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       <div class="mr-fork-line"></div>
     </div>
 
     <!-- Split: Vault vs Export -->
-    <div class="mr-split reveal">
+    <div class="mr-split">
 
       <!-- The Vault -->
       <div class="mr-split-col mr-split-col--vault">
@@ -1911,11 +2004,12 @@
     </div>
 
     <!-- Punchline -->
-    <p class="mr-punchline reveal">They remember everything. You own almost nothing.</p>
+    <p class="mr-punchline">They remember everything. You own almost nothing.</p>
 
-    <p class="mr-transition reveal">But it doesn&rsquo;t have to be this way.</p>
+    <p class="mr-transition">But it doesn&rsquo;t have to be this way.</p>
 
   </div>
+  </div><!-- .mr-stage -->
 </section>
 
     <div class="container">
@@ -2262,6 +2356,10 @@
         var text = userInput.value.trim();
         var highlights = analyzeUserText(text);
 
+        // Unpause canvas for the send animation
+        window.mrUserPaused = false;
+        if (vault) vault.style.animationPlayState = 'running';
+
         // Switch from textarea back to msg-area for highlight rendering
         chatBox.classList.remove('user-mode');
         showPlaceholder(false);
@@ -2319,24 +2417,63 @@
             chatBox.classList.add('user-mode');
             if (sendBtn) sendBtn.classList.remove('active');
             if (window.mrDataflowState) window.mrDataflowState('idle');
+            // Re-pause for user input
+            window.mrUserPaused = true;
+            if (vault) vault.style.animationPlayState = 'paused';
             userInput.focus();
           }, 400);
         }, holdTime);
       }
 
+      // Pause/resume API for canvas and vault pulse
+      var vault = document.querySelector('.mr-vault');
+
+      function enterUserMode() {
+        if (userMode) return;
+        userMode = true;
+        cycleId++; // Invalidate all pending auto-cycle callbacks
+        chatBox.classList.add('user-mode');
+        msgArea.style.opacity = '1';
+        if (tryPrompt) tryPrompt.classList.remove('visible');
+        if (window.mrDataflowState) window.mrDataflowState('idle');
+        // Pause canvas and vault pulse
+        window.mrUserPaused = true;
+        if (vault) vault.style.animationPlayState = 'paused';
+        userInput.focus();
+      }
+
+      function exitUserMode() {
+        if (!userMode) return;
+        userMode = false;
+        chatBox.classList.remove('user-mode');
+        userInput.value = '';
+        if (sendBtn) sendBtn.classList.remove('active');
+        // Resume canvas and vault pulse
+        window.mrUserPaused = false;
+        if (vault) vault.style.animationPlayState = 'running';
+        if (window.mrDataflowState) window.mrDataflowState('idle');
+        // Restart auto-typing
+        showPlaceholder(true);
+        setTimeout(typeMessage, 600);
+      }
+
       // Click to activate user mode
       if (chatBox) {
         chatBox.addEventListener('click', function (e) {
-          if (userMode || e.target === sendBtn || sendBtn.contains(e.target)) return;
-          userMode = true;
-          cycleId++; // Invalidate all pending auto-cycle callbacks
-          chatBox.classList.add('user-mode');
-          msgArea.style.opacity = '1'; // Reset in case a fade was in progress
-          if (tryPrompt) tryPrompt.classList.remove('visible');
-          if (window.mrDataflowState) window.mrDataflowState('idle');
-          userInput.focus();
+          if (userMode) return;
+          if (e.target === sendBtn || sendBtn.contains(e.target)) return;
+          enterUserMode();
         });
       }
+
+      // Click outside to exit user mode and resume
+      document.addEventListener('click', function (e) {
+        if (!userMode) return;
+        var chatEl = document.querySelector('.mr-chat');
+        if (chatEl && !chatEl.contains(e.target)) {
+          exitUserMode();
+        }
+      });
 
       // Handle Enter to send
       if (userInput) {
@@ -2359,7 +2496,7 @@
         });
       }
 
-      var chatEl = document.querySelector('.mr-chat');
+      var chatStartEl = document.querySelector('.mr-chat');
       var started = false;
       var observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
@@ -2371,7 +2508,7 @@
         });
       }, { threshold: 0.3 });
 
-      if (chatEl) observer.observe(chatEl);
+      if (chatStartEl) observer.observe(chatStartEl);
 
       // Show try prompt after 2 message cycles (~16s)
       setTimeout(function () {
@@ -2471,6 +2608,12 @@
       }
 
       function draw() {
+        // Pause when user is typing
+        if (window.mrUserPaused) {
+          requestAnimationFrame(draw);
+          return;
+        }
+
         // Smooth transitions
         currentAlpha += (targetAlpha - currentAlpha) * 0.04;
         currentSpeed += (targetSpeed - currentSpeed) * 0.04;
