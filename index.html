@@ -1047,6 +1047,11 @@
       padding: 3px 8px;
       white-space: nowrap;
       transform: rotate(var(--r, 0deg));
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .mr-vpill.visible {
       opacity: 0.8;
     }
 
@@ -1439,7 +1444,7 @@
           </div>
         </div>
         <div class="mr-vault-footer">
-          <span class="mr-counter" data-start="1200" data-end="1260">1,247</span> personal details retained &middot; No export available
+          <span class="mr-counter">1,200</span> personal details retained &middot; No export available
         </div>
       </div>
 
@@ -1714,6 +1719,10 @@
           }
           window.mrDataflowEmit(fragments);
         }
+        // Reveal vault pills after fragments travel
+        setTimeout(function () {
+          if (window.mrRevealVaultPills) window.mrRevealVaultPills(5);
+        }, 1200);
       }
 
       var chatEl = document.querySelector('.mr-chat');
@@ -1959,49 +1968,64 @@
       obs.observe(streamEl);
     })();
 
-    // ===== MEMORY REVEAL: VAULT COUNTER =====
+    // ===== MEMORY REVEAL: PROGRESSIVE VAULT =====
     (function () {
+      var pills = document.querySelectorAll('.mr-vpill');
       var counter = document.querySelector('.mr-counter');
-      if (!counter) return;
+      if (!pills.length) return;
 
-      var start = parseInt(counter.dataset.start, 10);
-      var end = parseInt(counter.dataset.end, 10);
-      var running = false;
-      var duration = 10000;
+      var revealIndex = 0;
+      var currentCount = 1200;
 
       function formatNumber(n) {
         return n.toLocaleString('en-US');
       }
 
-      function animateCounter() {
-        var startTime = null;
+      window.mrRevealVaultPills = function (count) {
+        var batchSize = count || 5;
+        var increment = 8 + Math.floor(Math.random() * 8);
 
-        function step(timestamp) {
-          if (!startTime) startTime = timestamp;
-          var progress = Math.min((timestamp - startTime) / duration, 1);
-          var current = Math.floor(start + (end - start) * progress);
-          counter.textContent = formatNumber(current);
-
-          if (progress < 1) {
-            requestAnimationFrame(step);
-          } else {
-            setTimeout(animateCounter, 2000);
-          }
+        for (var i = 0; i < batchSize && revealIndex < pills.length; i++) {
+          (function (idx, delay) {
+            setTimeout(function () {
+              pills[idx].classList.add('visible');
+            }, delay);
+          })(revealIndex, i * 120);
+          revealIndex++;
         }
 
-        requestAnimationFrame(step);
-      }
-
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting && !running) {
-            running = true;
-            animateCounter();
+        // Smooth counter increment
+        if (counter) {
+          var startVal = currentCount;
+          currentCount += increment;
+          var endVal = currentCount;
+          var startTime = performance.now();
+          var duration = 600;
+          function tick(now) {
+            var progress = Math.min((now - startTime) / duration, 1);
+            var val = Math.floor(startVal + (endVal - startVal) * progress);
+            counter.textContent = formatNumber(val);
+            if (progress < 1) requestAnimationFrame(tick);
           }
-        });
-      }, { threshold: 0.3 });
+          requestAnimationFrame(tick);
+        }
+      };
 
-      observer.observe(counter);
+      // Pre-reveal first 8 pills when section enters viewport
+      var section = document.querySelector('.memory-reveal');
+      if (section) {
+        var obs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              obs.disconnect();
+              setTimeout(function () {
+                window.mrRevealVaultPills(8);
+              }, 1000);
+            }
+          });
+        }, { threshold: 0.1 });
+        obs.observe(section);
+      }
     })();
   </script>
 
