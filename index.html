@@ -954,9 +954,25 @@
       align-items: flex-start;
     }
 
+    .mr-split-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mr-split-col--vault { flex: 7; }
+    .mr-split-col--export { flex: 3; }
+
+    .mr-split-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
     /* Vault */
     .mr-vault {
-      flex: 7;
       border-radius: 16px;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -1096,7 +1112,6 @@
 
     /* Export card */
     .mr-export {
-      flex: 3;
       border-radius: 12px;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -1156,18 +1171,22 @@
       max-width: 520px;
     }
 
+    .mr-transition {
+      font-family: var(--sans);
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      color: var(--muted);
+      text-align: center;
+      margin-top: 40px;
+    }
+
     /* Responsive */
     @media (max-width: 600px) {
       .mr-split {
         flex-direction: column;
       }
 
-      .mr-vault {
-        flex: none;
-        width: 100%;
-      }
-
-      .mr-export {
+      .mr-split-col--vault,
+      .mr-split-col--export {
         flex: none;
         width: 100%;
       }
@@ -1322,7 +1341,7 @@
   <div class="mr-container">
 
     <!-- Opener -->
-    <p class="mr-opener reveal">Every conversation leaves a trace.</p>
+    <p class="mr-opener reveal">You share everything. Here&rsquo;s what you get back.</p>
 
     <!-- Chat Input Simulation -->
     <div class="mr-chat reveal">
@@ -1360,6 +1379,8 @@
     <div class="mr-split reveal">
 
       <!-- The Vault -->
+      <div class="mr-split-col mr-split-col--vault">
+      <span class="mr-split-label">What they keep</span>
       <div class="mr-vault">
         <div class="mr-vault-bar">
           <div class="mr-dots"><span></span><span></span><span></span></div>
@@ -1422,7 +1443,11 @@
         </div>
       </div>
 
+      </div>
+
       <!-- Your Export -->
+      <div class="mr-split-col mr-split-col--export">
+      <span class="mr-split-label">What you get</span>
       <div class="mr-export">
         <div class="mr-export-bar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mr-file-icon"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -1435,11 +1460,14 @@
         </div>
         <div class="mr-export-footer">3 items visible to you</div>
       </div>
+      </div>
 
     </div>
 
     <!-- Punchline -->
     <p class="mr-punchline reveal">They remember everything. You own almost nothing.</p>
+
+    <p class="mr-transition reveal">But it doesn&rsquo;t have to be this way.</p>
 
   </div>
 </section>
