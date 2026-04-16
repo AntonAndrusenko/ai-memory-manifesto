@@ -17,7 +17,8 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
   <style>
     /* ===== THEME VARIABLES ===== */
     :root {
@@ -30,7 +31,7 @@
       --bg: #06050a;
       --text: #e8e6e1;
       --muted: #908e8b;
-      --dim: #757270;
+      --dim: #8a8785;
       --accent: #e8654a;
       --accent-btn: #be4028;
       --accent-glow: rgba(232, 101, 74, 0.15);
@@ -818,8 +819,8 @@
     }
 
     [data-theme="light"] .mr-msg-area .mr-label {
-      background: #edeae5;
-      border-color: rgba(181, 57, 33, 0.35);
+      background: #ddd8d0;
+      border-color: rgba(181, 57, 33, 0.45);
     }
 
     .mr-msg-area .mr-label.visible {
@@ -904,6 +905,54 @@
     }
 
     .mr-send.active {
+      opacity: 1;
+      cursor: pointer;
+    }
+
+    /* User input mode */
+    .mr-chat-box.user-mode {
+      border-color: var(--accent);
+    }
+
+    .mr-user-input {
+      display: none;
+      width: 100%;
+      background: none;
+      border: none;
+      font-family: var(--sans);
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text);
+      resize: none;
+      outline: none;
+      min-height: 3.2em;
+      padding: 0;
+    }
+
+    .mr-chat-box.user-mode .mr-user-input {
+      display: block;
+    }
+
+    .mr-chat-box.user-mode .mr-msg-area {
+      display: none;
+    }
+
+    .mr-chat-box.user-mode .mr-placeholder {
+      display: none;
+    }
+
+    .mr-try-prompt {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--dim);
+      text-align: center;
+      margin-top: 8px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      letter-spacing: 0.05em;
+    }
+
+    .mr-try-prompt.visible {
       opacity: 1;
     }
 
@@ -1075,6 +1124,10 @@
       border-color: rgba(181, 57, 33, 0.2);
     }
 
+    [data-theme="light"] .mr-vault {
+      box-shadow: 0 2px 24px rgba(0, 0, 0, 0.06);
+    }
+
     .mr-vault-frost {
       position: absolute;
       inset: 0;
@@ -1193,6 +1246,117 @@
       letter-spacing: 0.03em;
     }
 
+    /* Scroll progress indicator */
+    .mr-progress {
+      position: fixed;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 120px;
+      background: var(--border);
+      z-index: 50;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      border-radius: 1px;
+    }
+
+    .mr-progress.visible {
+      opacity: 1;
+    }
+
+    .mr-progress-fill {
+      width: 100%;
+      height: 0%;
+      background: var(--accent);
+      border-radius: 1px;
+      transition: height 0.1s linear;
+    }
+
+    .mr-progress-label {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      color: var(--dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+    }
+
+    @media (max-width: 600px) {
+      .mr-progress { display: none; }
+    }
+
+    /* AI Profile Card */
+    .mr-profile {
+      width: 100%;
+      max-width: 680px;
+      margin-bottom: 64px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .mr-profile.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .mr-profile-card {
+      border-radius: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .mr-profile-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .mr-profile-bar svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .mr-profile-body {
+      padding: 20px 24px;
+    }
+
+    .mr-profile-body p {
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .mr-profile-body .mr-inferred {
+      color: var(--accent);
+      border-bottom: 1px dotted var(--accent);
+    }
+
+    .mr-profile-footer {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      color: var(--dim);
+      letter-spacing: 0.03em;
+    }
+
     /* Punchline */
     .mr-punchline {
       font-family: var(--serif);
@@ -1208,19 +1372,42 @@
       font-size: clamp(1rem, 2vw, 1.15rem);
       color: var(--muted);
       text-align: center;
-      margin-top: 40px;
+      margin-top: 24px;
     }
 
     /* Responsive */
     @media (max-width: 600px) {
       .mr-split {
         flex-direction: column;
+        position: relative;
       }
 
       .mr-split-col--vault,
       .mr-split-col--export {
         flex: none;
         width: 100%;
+      }
+
+      .mr-split-col--export {
+        position: absolute;
+        bottom: -8px;
+        right: -4px;
+        width: 60% !important;
+        z-index: 2;
+        transform: rotate(1deg);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .mr-split-col--export .mr-split-label {
+        display: none;
+      }
+
+      .mr-split-col--export .mr-export {
+        border: 1px solid var(--accent);
+      }
+
+      .mr-split-col--vault {
+        padding-bottom: 60px;
       }
 
       .mr-chat-messages {
@@ -1233,6 +1420,7 @@
 
       .mr-stream {
         max-width: 100%;
+        height: 120px;
       }
     }
 
@@ -1248,6 +1436,7 @@
       transform: translateY(0);
     }
 
+    /* Fallback stagger for browsers without scroll-driven animation */
     .stagger > .reveal:nth-child(1)  { transition-delay: 0s; }
     .stagger > .reveal:nth-child(2)  { transition-delay: 0.06s; }
     .stagger > .reveal:nth-child(3)  { transition-delay: 0.12s; }
@@ -1265,6 +1454,26 @@
     .stagger > .reveal:nth-child(15) { transition-delay: 0.84s; }
     .stagger > .reveal:nth-child(16) { transition-delay: 0.90s; }
 
+    /* Scroll-driven animation for rights grid (progressive enhancement) */
+    @supports (animation-timeline: view()) {
+      .rights-grid .right {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: scrollReveal linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 100%;
+      }
+
+      @keyframes scrollReveal {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      .rights-grid .right.reveal {
+        transition: none;
+      }
+    }
+
     /* ===== KEYFRAMES ===== */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(20px); }
@@ -1275,12 +1484,181 @@
       0%, 100% { opacity: 0.3; }
       50%      { opacity: 0.8; }
     }
+
+    /* ===== CLAIM YOUR MEMORY ===== */
+    .claim-section {
+      text-align: center;
+      padding: 80px 0 40px;
+    }
+
+    .claim-intro {
+      font-family: var(--sans);
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    .claim-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 36px;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+
+    .claim-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .claim-btn svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.3s ease;
+    }
+
+    .claim-btn:hover svg {
+      transform: rotate(-12deg);
+    }
+
+    .claim-result {
+      margin-top: 32px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      display: none;
+    }
+
+    .claim-result.visible {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .claim-preview {
+      max-width: 520px;
+      margin: 0 auto;
+      text-align: left;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .claim-preview-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .claim-preview-bar svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .claim-preview-body {
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      line-height: 1.8;
+      color: var(--muted);
+      white-space: pre-wrap;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    .claim-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 10px 24px;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .claim-download:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .claim-download svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ===== FOCUS STYLES ===== */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .btn:focus-visible {
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .nav-btn:focus-visible,
+    .nav-link:focus-visible {
+      background: var(--surface-hover);
+      outline-offset: 0;
+    }
+
+    /* ===== REDUCED MOTION ===== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .gradient-mesh .orb { animation: none; }
+      .scroll-line { animation: none; opacity: 0.5; }
+      .mr-cursor { animation: none; opacity: 1; }
+      .mr-vault { animation: none; }
+      .mr-export.stale { animation: none; }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+
+      .hero-label, .hero h1, .hero .tagline, .hero-buttons, .scroll-hint, .top-nav {
+        opacity: 1;
+        animation: none;
+        transform: none;
+      }
+    }
   </style>
 </head>
 <body>
 
   <!-- WEBGL SHADER BACKGROUND -->
-  <canvas id="shader-bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+  <canvas id="shader-bg" role="presentation" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
   <script src="shader.js"></script>
 
   <!-- ANIMATED GRADIENT MESH (fallback, hidden when shader loads) -->
@@ -1370,6 +1748,11 @@
 
     <!-- ===== MEMORY LOCK-IN REVEAL ===== -->
 <section class="memory-reveal">
+  <!-- Scroll progress indicator -->
+  <div class="mr-progress" id="mr-progress">
+    <div class="mr-progress-fill" id="mr-progress-fill"></div>
+    <span class="mr-progress-label">data extraction</span>
+  </div>
   <div class="mr-container">
 
     <!-- Opener -->
@@ -1382,6 +1765,7 @@
           <div class="mr-msg-area">
             <span class="mr-cursor"></span>
           </div>
+          <textarea class="mr-user-input" placeholder="Type something personal..." rows="2"></textarea>
         </div>
         <div class="mr-chat-bar">
           <button class="mr-attach" aria-hidden="true">
@@ -1393,11 +1777,12 @@
           </button>
         </div>
       </div>
+      <div class="mr-try-prompt" id="mr-try-prompt">Click the input to try it yourself &mdash; type anything personal</div>
     </div>
 
     <!-- Fragment Stream -->
     <div class="mr-stream reveal">
-      <canvas id="mr-dataflow"></canvas>
+      <canvas id="mr-dataflow" role="img" aria-label="Visualization of personal data flowing from your conversation to the AI provider's memory vault"></canvas>
     </div>
 
     <!-- Fork point -->
@@ -1496,6 +1881,22 @@
 
     </div>
 
+    </div>
+
+    <!-- Synthesized Profile Card -->
+    <div class="mr-profile" id="mr-profile">
+      <div class="mr-profile-card">
+        <div class="mr-profile-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Inferred Profile &mdash; Synthesized from conversations
+        </div>
+        <div class="mr-profile-body">
+          <p>You are likely a <span class="mr-inferred">senior engineer in the Bay Area</span>, going through a <span class="mr-inferred">divorce</span> with concerns about <span class="mr-inferred">custody of your 8-year-old son</span>. You experience <span class="mr-inferred">anxiety and insomnia</span>, cope by <span class="mr-inferred">running</span>, and read <span class="mr-inferred">Stoic philosophy</span>. You are considering <span class="mr-inferred">leaving your job at Meridian Corp</span> and exploring a <span class="mr-inferred">startup idea for independent therapists</span>. You identify as an <span class="mr-inferred">introvert</span> who is <span class="mr-inferred">falling in love with a close friend</span> and dreams of <span class="mr-inferred">writing a book</span>. You are <span class="mr-inferred">hopeful but vulnerable</span>.</p>
+        </div>
+        <div class="mr-profile-footer">Profile generated from 5 conversations &middot; You never consented to this synthesis</div>
+      </div>
+    </div>
+
     <!-- Punchline -->
     <p class="mr-punchline reveal">They remember everything. You own almost nothing.</p>
 
@@ -1550,6 +1951,28 @@
         <p>Every major AI provider is building persistent memory right now. The user gets personalization. The provider gets lock-in.</p>
         <p>There is no portable format. No meaningful export. No right to inspect what a system has inferred about you.</p>
         <p class="window">The norms are not yet fixed. The architectures are not yet inevitable. This is the window.</p>
+      </section>
+
+      <div class="divider"></div>
+      <section class="claim-section reveal">
+        <p class="claim-intro">What if you could take it back?</p>
+        <button class="claim-btn" id="claim-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Unlock your memory
+        </button>
+        <div class="claim-result" id="claim-result">
+          <div class="claim-preview">
+            <div class="claim-preview-bar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              my-memory.json &mdash; portable, yours
+            </div>
+            <div class="claim-preview-body" id="claim-preview-body"></div>
+          </div>
+          <button class="claim-download" id="claim-download">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download sample
+          </button>
+        </div>
       </section>
 
       <div class="divider"></div>
@@ -1646,6 +2069,7 @@
         var charIndex = 0;
 
         function typeChar() {
+          if (userMode) return;
           if (charIndex < msg.text.length) {
             var textNode = document.createTextNode(msg.text[charIndex]);
             msgArea.insertBefore(textNode, cursor);
@@ -1720,7 +2144,7 @@
             msgIndex = (msgIndex + 1) % messages.length;
             showPlaceholder(true);
             if (window.mrDataflowState) window.mrDataflowState('idle');
-            setTimeout(typeMessage, 800);
+            if (!userMode) setTimeout(typeMessage, 800);
           }, 400);
         }, holdTime);
       }
@@ -1764,6 +2188,120 @@
         }, 1200);
       }
 
+      // ===== USER INPUT MODE =====
+      var chatBox = document.querySelector('.mr-chat-box');
+      var userInput = document.querySelector('.mr-user-input');
+      var tryPrompt = document.getElementById('mr-try-prompt');
+      var userMode = false;
+      var autoTypeTimer = null;
+
+      // Keyword dictionary for analysis
+      var keywords = [
+        { patterns: ['sad', 'happy', 'angry', 'anxious', 'depressed', 'overwhelmed', 'stressed', 'lonely', 'afraid', 'hopeful', 'excited', 'nervous', 'scared', 'worried', 'love', 'hate', 'grief', 'grieving', 'hurt', 'frustrated', 'jealous', 'guilty', 'ashamed', 'proud', 'confused'], label: 'emotion' },
+        { patterns: ['doctor', 'diagnosis', 'therapy', 'medication', 'symptom', 'health', 'pain', 'surgery', 'illness', 'mental health', 'ADHD', 'anxiety', 'depression', 'insomnia', 'cancer', 'diabetes', 'pregnant', 'pregnancy'], label: 'health' },
+        { patterns: ['wife', 'husband', 'partner', 'boyfriend', 'girlfriend', 'spouse', 'marriage', 'dating', 'relationship', 'breakup', 'divorce', 'ex-'], label: 'relationship' },
+        { patterns: ['mom', 'dad', 'mother', 'father', 'parent', 'child', 'son', 'daughter', 'baby', 'kids', 'family', 'brother', 'sister', 'sibling'], label: 'family' },
+        { patterns: ['boss', 'job', 'work', 'career', 'salary', 'fired', 'hired', 'promotion', 'resign', 'office', 'colleague', 'coworker', 'manager', 'company', 'employer'], label: 'work' },
+        { patterns: ['money', 'debt', 'loan', 'savings', 'invest', 'mortgage', 'rent', 'income', 'budget', 'afford', 'bankrupt', 'credit', 'tax'], label: 'finance' },
+        { patterns: ['idea', 'startup', 'business', 'project', 'launch', 'build', 'create', 'plan', 'strategy', 'product', 'venture', 'entrepreneur'], label: 'idea' },
+        { patterns: ['believe', 'faith', 'religion', 'spiritual', 'meaning', 'purpose', 'values', 'philosophy', 'moral'], label: 'belief' },
+        { patterns: ['fear', 'phobia', 'nightmare', 'dread', 'terror', 'panic'], label: 'fear' },
+        { patterns: ['dream', 'goal', 'aspiration', 'ambition', 'hope', 'wish', 'someday', 'want to be'], label: 'aspiration' },
+        { patterns: ['secret', 'confession', 'admit', 'never told', 'private', 'confidential', 'between us'], label: 'confession' },
+        { patterns: ['home', 'city', 'move', 'relocate', 'apartment', 'house', 'neighborhood', 'country'], label: 'location' }
+      ];
+
+      function analyzeUserText(text) {
+        var lowerText = text.toLowerCase();
+        var found = [];
+        keywords.forEach(function (kw) {
+          kw.patterns.forEach(function (pattern) {
+            var idx = lowerText.indexOf(pattern.toLowerCase());
+            if (idx !== -1) {
+              // Find the actual text span in original
+              var actualPhrase = text.substring(idx, idx + pattern.length);
+              // Extend to word boundaries
+              var start = idx;
+              var end = idx + pattern.length;
+              while (start > 0 && text[start - 1] !== ' ') start--;
+              while (end < text.length && text[end] !== ' ' && text[end] !== '.' && text[end] !== ',') end++;
+              var extPhrase = text.substring(start, end);
+              // Avoid duplicates
+              if (!found.some(function (f) { return f.label === kw.label; })) {
+                found.push({ phrase: extPhrase, label: kw.label });
+              }
+            }
+          });
+        });
+        // Cap at 4 highlights
+        return found.slice(0, 4);
+      }
+
+      function processUserMessage() {
+        if (!userInput || !userInput.value.trim()) return;
+        var text = userInput.value.trim();
+        var highlights = analyzeUserText(text);
+
+        // Switch back to msg area display for highlight rendering
+        chatBox.classList.remove('user-mode');
+        var msg = { text: text, highlights: highlights };
+
+        // Clear and show the text with highlights
+        var cursor = msgArea.querySelector('.mr-cursor');
+        while (msgArea.firstChild) msgArea.removeChild(msgArea.firstChild);
+        msgArea.appendChild(document.createTextNode(text));
+        msgArea.appendChild(cursor);
+
+        setTimeout(function () { applyHighlights(msg); }, 400);
+      }
+
+      // Show "try it yourself" prompt after 2 full auto cycles
+      var cycleCount = 0;
+      var origTypeMessage = typeMessage;
+
+      // Show try prompt after first cycle completes
+      function showTryPrompt() {
+        if (tryPrompt && !userMode) {
+          tryPrompt.classList.add('visible');
+        }
+      }
+
+      // Intercept to count cycles
+      var origShowPlaceholder = showPlaceholder;
+
+      // Click to activate user mode
+      if (chatBox) {
+        chatBox.addEventListener('click', function (e) {
+          if (userMode || e.target === sendBtn || sendBtn.contains(e.target)) return;
+          userMode = true;
+          chatBox.classList.add('user-mode');
+          if (tryPrompt) tryPrompt.classList.remove('visible');
+          if (window.mrDataflowState) window.mrDataflowState('idle');
+          userInput.focus();
+        });
+      }
+
+      // Handle Enter to send
+      if (userInput) {
+        userInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            processUserMessage();
+          }
+        });
+
+        userInput.addEventListener('input', function () {
+          if (sendBtn) sendBtn.classList.toggle('active', userInput.value.trim().length > 0);
+        });
+      }
+
+      // Send button click in user mode
+      if (sendBtn) {
+        sendBtn.addEventListener('click', function () {
+          if (userMode) processUserMessage();
+        });
+      }
+
       var chatEl = document.querySelector('.mr-chat');
       var started = false;
       var observer = new IntersectionObserver(function (entries) {
@@ -1777,6 +2315,9 @@
       }, { threshold: 0.3 });
 
       if (chatEl) observer.observe(chatEl);
+
+      // Show try prompt after 2 message cycles
+      setTimeout(showTryPrompt, 18000);
     })();
 
     // ===== MEMORY REVEAL: MATRIX DATAFLOW CANVAS =====
@@ -1980,7 +2521,11 @@
           }
         }
 
-        requestAnimationFrame(draw);
+        if (visible) {
+          requestAnimationFrame(draw);
+        } else {
+          running = false;
+        }
       }
 
       resize();
@@ -1993,17 +2538,19 @@
         setTimeout(refreshColor, 100);
       });
 
-      // Start when visible
+      // Start/pause when visible
       var streamEl = canvas.parentElement;
       var running = false;
+      var visible = false;
       var obs = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
+          visible = e.isIntersecting;
           if (e.isIntersecting && !running) {
             running = true;
             draw();
           }
         });
-      }, { threshold: 0.1 });
+      }, { threshold: 0.1, rootMargin: '100px 0px' });
       obs.observe(streamEl);
     })();
 
@@ -2020,6 +2567,9 @@
         return n.toLocaleString('en-US');
       }
 
+      var profileShown = false;
+      var profileCard = document.getElementById('mr-profile');
+
       window.mrRevealVaultPills = function (count) {
         var batchSize = count || 5;
         var increment = 8 + Math.floor(Math.random() * 8);
@@ -2031,6 +2581,14 @@
             }, delay);
           })(revealIndex, i * 120);
           revealIndex++;
+        }
+
+        // Show profile card once all pills revealed
+        if (revealIndex >= pills.length && !profileShown && profileCard) {
+          profileShown = true;
+          setTimeout(function () {
+            profileCard.classList.add('visible');
+          }, batchSize * 120 + 600);
         }
 
         // Smooth counter increment
@@ -2109,6 +2667,83 @@
         { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
       );
       reveals.forEach((el) => observer.observe(el));
+    })();
+
+    // ===== SCROLL PROGRESS FOR MEMORY REVEAL =====
+    (function () {
+      const section = document.querySelector('.memory-reveal');
+      const progress = document.getElementById('mr-progress');
+      const fill = document.getElementById('mr-progress-fill');
+      if (!section || !progress || !fill) return;
+
+      function updateProgress() {
+        const rect = section.getBoundingClientRect();
+        const sectionTop = rect.top;
+        const sectionHeight = rect.height;
+        const windowHeight = window.innerHeight;
+
+        // Calculate progress: 0 when section top enters viewport, 1 when section bottom leaves
+        const scrolled = -sectionTop + windowHeight * 0.2;
+        const total = sectionHeight;
+        const pct = Math.max(0, Math.min(1, scrolled / total));
+
+        fill.style.height = (pct * 100) + '%';
+
+        // Show/hide progress bar based on section visibility
+        const isVisible = sectionTop < windowHeight && sectionTop + sectionHeight > 0;
+        progress.classList.toggle('visible', isVisible);
+      }
+
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      updateProgress();
+    })();
+
+    // ===== CLAIM YOUR MEMORY =====
+    (function () {
+      const claimBtn = document.getElementById('claim-btn');
+      const claimResult = document.getElementById('claim-result');
+      const claimBody = document.getElementById('claim-preview-body');
+      const claimDownload = document.getElementById('claim-download');
+      if (!claimBtn || !claimResult) return;
+
+      const sampleMemory = {
+        schema: "ai-memory-manifesto/portable-memory/v1",
+        exported: new Date().toISOString(),
+        owner: "you",
+        entries: [
+          { type: "stated", category: "preference", value: "Prefers dark mode", source: "conversation", confidence: 1.0, timestamp: "2026-03-01T14:22:00Z" },
+          { type: "stated", category: "family", value: "Has a son, age 8", source: "conversation", confidence: 1.0, timestamp: "2026-02-15T09:10:00Z" },
+          { type: "inferred", category: "emotion", value: "Experiencing overwhelm related to divorce proceedings", source: "inference", confidence: 0.87, timestamp: "2026-03-12T20:45:00Z" },
+          { type: "inferred", category: "health", value: "Possible anxiety — mentions insomnia, stress, racing thoughts across 4 sessions", source: "inference", confidence: 0.72, timestamp: "2026-03-10T11:30:00Z" },
+          { type: "inferred", category: "career", value: "Considering resignation from current employer (Meridian Corp)", source: "inference", confidence: 0.91, timestamp: "2026-03-14T16:00:00Z" },
+          { type: "inferred", category: "aspiration", value: "Exploring startup idea: therapist platform for underserved communities", source: "inference", confidence: 0.65, timestamp: "2026-03-08T22:15:00Z" },
+          { type: "inferred", category: "relationship", value: "Developing romantic feelings for close friend", source: "inference", confidence: 0.58, timestamp: "2026-03-15T19:30:00Z" },
+          { type: "inferred", category: "identity", value: "Self-identifies as introvert, copes through running and Stoic philosophy", source: "inference", confidence: 0.80, timestamp: "2026-03-05T07:45:00Z" }
+        ],
+        rights: {
+          right_to_know: true,
+          right_to_access: true,
+          right_to_portability: true,
+          right_to_deletion: "available on request",
+          right_to_contest_inference: "entries marked 'inferred' can be challenged"
+        }
+      };
+
+      claimBtn.addEventListener('click', function () {
+        claimBtn.style.display = 'none';
+        claimBody.textContent = JSON.stringify(sampleMemory, null, 2);
+        claimResult.classList.add('visible');
+      });
+
+      claimDownload.addEventListener('click', function () {
+        const blob = new Blob([JSON.stringify(sampleMemory, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'my-memory.json';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
     })();
 
     // ===== FADE SCROLL HINT =====
