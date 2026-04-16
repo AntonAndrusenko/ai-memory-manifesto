@@ -2489,8 +2489,7 @@
       var ctx = canvas.getContext('2d');
 
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var W, H, cols, fontSize, streams;
-      var pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*=+<>~/\\|{}[]():;.'.split('');
+      var W, H, isMobile;
 
       // State machine: idle -> typing -> analyzing -> sending -> idle
       var state = 'idle';
@@ -2501,12 +2500,11 @@
       var targetDensity = 0;
       var currentDensity = 0;
 
-      // State parameters
       var states = {
-        idle:      { alpha: 0, speed: 0.4, density: 0 },
-        typing:    { alpha: 0, speed: 0.4, density: 0 },
-        analyzing: { alpha: 0, speed: 0.4, density: 0 },
-        sending:   { alpha: 0.55, speed: 3.0, density: 0.95 }
+        idle:      { alpha: 0,   speed: 0.4, density: 0 },
+        typing:    { alpha: 0,   speed: 0.4, density: 0 },
+        analyzing: { alpha: 0,   speed: 0.4, density: 0 },
+        sending:   { alpha: 1.0, speed: 2.5, density: 1.0 }
       };
 
       window.mrDataflowState = function (s) {
@@ -2517,23 +2515,49 @@
         targetDensity = p.density;
       };
 
+      // -- Fiber data (computed in resize) --
+      var fibers = [];
+      var fiberGlow = []; // per-fiber glow intensity (0-1), decays each frame
+
+      // -- Scan line data (computed in resize) --
+      var scanLines = [];
+      var scanLineBrightness = []; // per-line local brightness boost array [{x, intensity}]
+
+      // -- Fragment data --
       var dataFragments = [];
 
+      // -- Hotspot --
+      var hotspotOpacity = 0;
+
       window.mrDataflowEmit = function (texts) {
+        var highlights = document.querySelectorAll('.mr-highlight');
+        var canvasRect = canvas.getBoundingClientRect();
         texts.forEach(function (text, i) {
+          var x;
+          if (i < highlights.length && canvasRect.width > 0) {
+            var hRect = highlights[i].getBoundingClientRect();
+            x = (hRect.left + hRect.width / 2 - canvasRect.left) / canvasRect.width * W;
+            x = Math.max(W * 0.05, Math.min(W * 0.85, x));
+          } else {
+            x = W * 0.15 + Math.random() * W * 0.7;
+          }
           dataFragments.push({
             text: text,
-            x: W * 0.2 + Math.random() * W * 0.6,
+            x: x,
             y: -20 - i * 28,
-            speed: currentSpeed * 1.5 + Math.random() * 0.5,
-            opacity: 0.85,
-            age: 0
+            speed: currentSpeed * 1.2 + Math.random() * 0.4,
+            opacity: 0.9,
+            fontSize: isMobile ? 12 : 14,
+            crossings: 0,
+            _crossedLines: 0,
+            flashIntensity: 0,
+            nodeOpacity: 0,
+            statusText: ''
           });
         });
       };
 
       function resize() {
-        dataFragments = [];
         var rect = canvas.parentElement.getBoundingClientRect();
         W = rect.width;
         H = rect.height;
@@ -2543,22 +2567,44 @@
         canvas.style.height = H + 'px';
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-        fontSize = 13;
-        cols = Math.floor(W / fontSize);
-        streams = [];
-        for (var i = 0; i < cols; i++) {
-          streams.push({
-            y: Math.random() * -H,
-            speed: 0.3 + Math.random() * 1.2,
-            length: 4 + Math.floor(Math.random() * 10),
-            chars: [],
-            changeTimer: 0
-          });
-          // Pre-fill characters
-          for (var j = 0; j < streams[i].length; j++) {
-            streams[i].chars.push(pool[Math.floor(Math.random() * pool.length)]);
-          }
+        isMobile = W <= 480;
+
+        // Fiber positions (% of W)
+        if (isMobile) {
+          fibers = [
+            { x: W * 0.20, w: 1 },
+            { x: W * 0.50, w: 1.5 },
+            { x: W * 0.80, w: 1 }
+          ];
+        } else {
+          fibers = [
+            { x: W * 0.12, w: 1 },
+            { x: W * 0.28, w: 1 },
+            { x: W * 0.50, w: 1.5 },
+            { x: W * 0.70, w: 1 },
+            { x: W * 0.87, w: 1 }
+          ];
         }
+        fiberGlow = fibers.map(function () { return 0; });
+
+        // Scan line positions (% of H) — compress toward bottom
+        if (isMobile) {
+          scanLines = [
+            { baseY: H * 0.40, y: H * 0.40, peakAlpha: 0.22, glowSpread: 4 },
+            { baseY: H * 0.80, y: H * 0.80, peakAlpha: 0.40, glowSpread: 12 }
+          ];
+        } else {
+          scanLines = [
+            { baseY: H * 0.25, y: H * 0.25, peakAlpha: 0.18, glowSpread: 0 },
+            { baseY: H * 0.50, y: H * 0.50, peakAlpha: 0.26, glowSpread: 6 },
+            { baseY: H * 0.70, y: H * 0.70, peakAlpha: 0.35, glowSpread: 10 },
+            { baseY: H * 0.85, y: H * 0.85, peakAlpha: 0.45, glowSpread: 14 }
+          ];
+        }
+        scanLineBrightness = scanLines.map(function () { return []; });
+
+        dataFragments = [];
+        hotspotOpacity = 0;
       }
 
       var accentColor = '';
@@ -2573,121 +2619,39 @@
         return r + ',' + g + ',' + b;
       }
 
+      function drawFibers(rgb) { /* Task 2 */ }
+      function drawScanLines(rgb) { /* Task 3 */ }
+      function updateAndDrawFragments(rgb) { /* Task 4 */ }
+      function drawHotspot(rgb) { /* Task 5 */ }
+
       function draw() {
-        // Pause when user is typing
         if (window.mrUserPaused) {
           requestAnimationFrame(draw);
           return;
         }
 
-        // Smooth transitions
-        currentAlpha += (targetAlpha - currentAlpha) * 0.04;
-        currentSpeed += (targetSpeed - currentSpeed) * 0.04;
-        currentDensity += (targetDensity - currentDensity) * 0.04;
+        // Asymmetric easing: fast fade-in, slow fade-out
+        var lerpFactor = (targetAlpha > currentAlpha) ? 0.08 : 0.04;
+        currentAlpha += (targetAlpha - currentAlpha) * lerpFactor;
+        currentSpeed += (targetSpeed - currentSpeed) * lerpFactor;
+        currentDensity += (targetDensity - currentDensity) * lerpFactor;
 
-        // Clear canvas fully — trails are drawn explicitly per stream
+        // Early exit if nothing to render
+        if (currentAlpha < 0.01 && dataFragments.length === 0) {
+          ctx.clearRect(0, 0, W, H);
+          if (visible) requestAnimationFrame(draw); else running = false;
+          return;
+        }
+
         ctx.clearRect(0, 0, W, H);
 
         if (!accentColor) refreshColor();
         var rgb = hexToRgb(accentColor);
 
-        ctx.font = fontSize + 'px "JetBrains Mono", monospace';
-        ctx.textAlign = 'center';
-
-        for (var i = 0; i < cols; i++) {
-          var s = streams[i];
-
-          // Center columns are denser
-          var centerDist = Math.abs(i - cols / 2) / (cols / 2);
-          var colDensity = currentDensity * (1 - centerDist * 0.5);
-          if (colDensity < 0.1) continue;
-
-          // Randomly skip inactive columns
-          if (s.y < -20 && Math.random() > colDensity) continue;
-
-          var x = i * fontSize + fontSize / 2;
-
-          // Draw trail (oldest to newest, dimmer to brighter)
-          for (var j = 0; j < s.length; j++) {
-            var charY = s.y - (s.length - 1 - j) * fontSize;
-            if (charY < -fontSize || charY > H + fontSize) continue;
-
-            // Fade factor: 0 at tail, 1 at head
-            var fade = j / (s.length - 1);
-
-            // Vertical fade: dimmer at very top and bottom of canvas
-            var vFade = 1;
-            if (charY < 30) vFade = charY / 30;
-            if (charY > H - 20) vFade = (H - charY) / 20;
-            vFade = Math.max(0, Math.min(1, vFade));
-
-            var alpha = currentAlpha * (0.15 + fade * 0.85) * vFade;
-
-            if (j === s.length - 1) {
-              // Head character: brightest
-              ctx.fillStyle = 'rgba(' + rgb + ',' + Math.min(alpha * 2.5, 0.85) + ')';
-            } else {
-              ctx.fillStyle = 'rgba(' + rgb + ',' + alpha + ')';
-            }
-
-            ctx.globalAlpha = 1;
-            ctx.fillText(s.chars[j], x, charY);
-          }
-
-          // Randomly mutate a character in the trail (matrix flicker)
-          s.changeTimer++;
-          if (s.changeTimer > 3) {
-            s.changeTimer = 0;
-            var ri = Math.floor(Math.random() * s.length);
-            s.chars[ri] = pool[Math.floor(Math.random() * pool.length)];
-          }
-
-          // Move stream down
-          s.y += s.speed * currentSpeed;
-
-          // Reset when fully off screen
-          if (s.y - s.length * fontSize > H) {
-            s.y = -s.length * fontSize - Math.random() * H * 0.5;
-            s.speed = 0.3 + Math.random() * 1.2;
-            s.length = 4 + Math.floor(Math.random() * 10);
-            s.chars = [];
-            for (var k = 0; k < s.length; k++) {
-              s.chars.push(pool[Math.floor(Math.random() * pool.length)]);
-            }
-          }
-        }
-
-        // Render data fragments over the rain
-        if (dataFragments.length > 0) {
-          ctx.font = '600 11px "JetBrains Mono", monospace';
-          ctx.textAlign = 'center';
-          var fragRgb = hexToRgb(accentColor);
-
-          for (var fi = dataFragments.length - 1; fi >= 0; fi--) {
-            var frag = dataFragments[fi];
-            frag.y += frag.speed;
-            frag.age++;
-
-            // Fade in bottom 30%
-            var fadeZone = H * 0.7;
-            if (frag.y > fadeZone) {
-              frag.opacity = Math.max(0, 0.85 * (1 - (frag.y - fadeZone) / (H - fadeZone)));
-            }
-
-            // Converge toward center
-            var targetX = W / 2;
-            frag.x += (targetX - frag.x) * 0.008;
-
-            if (frag.y > H + 20 || frag.opacity <= 0) {
-              dataFragments.splice(fi, 1);
-              continue;
-            }
-
-            ctx.globalAlpha = 1;
-            ctx.fillStyle = 'rgba(' + fragRgb + ',' + frag.opacity + ')';
-            ctx.fillText(frag.text, frag.x, frag.y);
-          }
-        }
+        drawFibers(rgb);
+        drawScanLines(rgb);
+        updateAndDrawFragments(rgb);
+        drawHotspot(rgb);
 
         if (visible) {
           requestAnimationFrame(draw);
@@ -2700,13 +2664,11 @@
       refreshColor();
       window.addEventListener('resize', resize, { passive: true });
 
-      // Refresh color on theme toggle
       var themeBtn = document.getElementById('theme-toggle');
       if (themeBtn) themeBtn.addEventListener('click', function () {
         setTimeout(refreshColor, 100);
       });
 
-      // Start/pause when visible
       var streamEl = canvas.parentElement;
       var running = false;
       var visible = false;
