@@ -1693,8 +1693,27 @@
         }, holdTime);
       }
 
-      function emitPills() {
+      var bonusPool = [
+        'pattern: late-night usage', 'sentiment: vulnerable',
+        'topic: personal crisis', 'engagement: high',
+        'context: seeking advice', 'profile: reflective',
+        'behavior: confiding', 'trust level: deep',
+        'session: extended', 'tone: emotional',
+        'risk: burnout', 'need: support'
+      ];
+
+      function emitPills(msg) {
         if (window.mrDataflowState) window.mrDataflowState('sending');
+        if (window.mrDataflowEmit && msg && msg.highlights) {
+          var fragments = msg.highlights.map(function (h) {
+            return h.label + ': ' + h.phrase;
+          });
+          var bonusCount = 2 + Math.floor(Math.random() * 2);
+          for (var i = 0; i < bonusCount; i++) {
+            fragments.push(bonusPool[Math.floor(Math.random() * bonusPool.length)]);
+          }
+          window.mrDataflowEmit(fragments);
+        }
       }
 
       var chatEl = document.querySelector('.mr-chat');
@@ -1747,7 +1766,23 @@
         targetDensity = p.density;
       };
 
+      var dataFragments = [];
+
+      window.mrDataflowEmit = function (texts) {
+        texts.forEach(function (text, i) {
+          dataFragments.push({
+            text: text,
+            x: W * 0.2 + Math.random() * W * 0.6,
+            y: -20 - i * 28,
+            speed: currentSpeed * 1.5 + Math.random() * 0.5,
+            opacity: 0.85,
+            age: 0
+          });
+        });
+      };
+
       function resize() {
+        dataFragments = [];
         var rect = canvas.parentElement.getBoundingClientRect();
         W = rect.width;
         H = rect.height;
@@ -1862,6 +1897,38 @@
             for (var k = 0; k < s.length; k++) {
               s.chars.push(pool[Math.floor(Math.random() * pool.length)]);
             }
+          }
+        }
+
+        // Render data fragments over the rain
+        if (dataFragments.length > 0) {
+          ctx.font = '600 11px "JetBrains Mono", monospace';
+          ctx.textAlign = 'center';
+          var fragRgb = hexToRgb(accentColor);
+
+          for (var fi = dataFragments.length - 1; fi >= 0; fi--) {
+            var frag = dataFragments[fi];
+            frag.y += frag.speed;
+            frag.age++;
+
+            // Fade in bottom 30%
+            var fadeZone = H * 0.7;
+            if (frag.y > fadeZone) {
+              frag.opacity = Math.max(0, 0.85 * (1 - (frag.y - fadeZone) / (H - fadeZone)));
+            }
+
+            // Converge toward center
+            var targetX = W / 2;
+            frag.x += (targetX - frag.x) * 0.008;
+
+            if (frag.y > H + 20 || frag.opacity <= 0) {
+              dataFragments.splice(fi, 1);
+              continue;
+            }
+
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = 'rgba(' + fragRgb + ',' + frag.opacity + ')';
+            ctx.fillText(frag.text, frag.x, frag.y);
           }
         }
 
