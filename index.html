@@ -48,13 +48,14 @@
       --ascii-fade: rgba(6, 5, 10, 0.07);
       --nav-bg: rgba(6, 5, 10, 0.7);
       --right-hover-text: #fff;
+      --accent-border: rgba(232, 101, 74, 0.2);
     }
 
     [data-theme="light"] {
       --bg: #f6f4f0;
       --text: #1a1917;
       --muted: #656260;
-      --dim: #6d6a65;
+      --dim: #635f5a;
       --accent: #b53921;
       --accent-btn: #b53921;
       --accent-glow: rgba(181, 57, 33, 0.08);
@@ -71,11 +72,21 @@
       --ascii-fade: rgba(246, 244, 240, 0.12);
       --nav-bg: rgba(246, 244, 240, 0.8);
       --right-hover-text: #1a1917;
+      --accent-border: rgba(181, 57, 33, 0.2);
     }
 
     /* ===== RESET ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+
+    ::selection {
+      background: var(--accent-strong);
+      color: #fff;
+    }
+
+    [data-theme="light"] ::selection {
+      color: #fff;
+    }
 
     body {
       font-family: var(--sans);
@@ -210,8 +221,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       border: none;
       background: transparent;
       color: var(--muted);
@@ -277,8 +288,8 @@
       display: none;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       border: none;
       background: transparent;
       color: var(--muted);
@@ -607,7 +618,7 @@
 
     .right .desc {
       font-family: var(--sans);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 400;
       color: var(--dim);
       line-height: 1.5;
@@ -669,12 +680,14 @@
       align-items: center;
       gap: 8px;
       padding: 16px 36px;
+      border-radius: 8px;
       font-family: var(--sans);
       font-size: 0.85rem;
       font-weight: 600;
       text-decoration: none;
       letter-spacing: 0.06em;
       text-transform: uppercase;
+      cursor: pointer;
       transition: all 0.3s ease;
     }
 
@@ -683,6 +696,7 @@
     .btn-primary {
       background: var(--accent-btn);
       color: #fff;
+      border: none;
     }
 
     .btn-primary:hover {
@@ -732,6 +746,8 @@
       color: var(--dim);
       text-decoration: underline;
       text-underline-offset: 3px;
+      display: inline-block;
+      padding: 4px 0;
     }
 
     /* ===== MEMORY LOCK-IN REVEAL ===== */
@@ -806,7 +822,7 @@
       font-size: 0.65rem;
       font-weight: 400;
       color: var(--accent);
-      background: #2a2833;
+      background: #1e1b27;
       border: 1px solid rgba(232, 101, 74, 0.35);
       border-radius: 4px;
       padding: 2px 8px;
@@ -818,7 +834,7 @@
     }
 
     [data-theme="light"] .mr-msg-area .mr-label {
-      background: #ddd8d0;
+      background: #f0ede7;
       border-color: rgba(181, 57, 33, 0.45);
     }
 
@@ -1118,7 +1134,7 @@
       font-size: 0.6rem;
       color: var(--accent);
       background: var(--surface);
-      border: 1px solid rgba(232, 101, 74, 0.2);
+      border: 1px solid var(--accent-border);
       border-radius: 3px;
       padding: 3px 8px;
       white-space: nowrap;
@@ -1129,10 +1145,6 @@
 
     .mr-vpill.visible {
       opacity: 0.8;
-    }
-
-    [data-theme="light"] .mr-vpill {
-      border-color: rgba(181, 57, 33, 0.2);
     }
 
     [data-theme="light"] .mr-vault {
@@ -1198,7 +1210,7 @@
     /* Export card */
     .mr-export {
       border-radius: 12px;
-      background: var(--bg);
+      background: var(--surface);
       border: 1px solid var(--border);
       overflow: hidden;
     }
@@ -1252,7 +1264,7 @@
       padding: 10px 14px;
       border-top: 1px solid var(--border);
       font-family: var(--mono);
-      font-size: 0.6rem;
+      font-size: 0.65rem;
       color: var(--dim);
       letter-spacing: 0.03em;
     }
@@ -1290,7 +1302,7 @@
       top: 50%;
       transform: translateY(-50%);
       font-family: var(--mono);
-      font-size: 0.55rem;
+      font-size: 0.65rem;
       color: var(--dim);
       letter-spacing: 0.1em;
       text-transform: uppercase;
@@ -1363,7 +1375,7 @@
       padding: 10px 16px;
       border-top: 1px solid var(--border);
       font-family: var(--mono);
-      font-size: 0.6rem;
+      font-size: 0.65rem;
       color: var(--dim);
       letter-spacing: 0.03em;
     }
@@ -1432,6 +1444,32 @@
       .mr-stream {
         max-width: 100%;
         height: 120px;
+      }
+
+      /* Mobile font-size floor: nothing below 12px */
+      .mr-vpill { font-size: 0.75rem; }
+      .mr-try-prompt,
+      .mr-split-label,
+      .mr-vault-footer,
+      .mr-export-footer,
+      .mr-profile-footer { font-size: 0.75rem; }
+      .mr-vault-title,
+      .mr-export-bar,
+      .mr-export-body code,
+      .mr-profile-bar,
+      .claim-preview-bar { font-size: 0.75rem; }
+
+      /* Mobile touch targets: 44px minimum */
+      .mr-attach,
+      .mr-send { width: 44px; height: 44px; }
+
+      .claim-download { min-height: 44px; }
+
+      footer .links a {
+        display: inline-block;
+        padding: 8px 4px;
+        min-height: 44px;
+        line-height: 28px;
       }
     }
 
@@ -1515,6 +1553,7 @@
       align-items: center;
       gap: 10px;
       padding: 16px 36px;
+      border-radius: 8px;
       font-family: var(--sans);
       font-size: 0.85rem;
       font-weight: 600;
@@ -1603,6 +1642,7 @@
       gap: 8px;
       margin-top: 20px;
       padding: 10px 24px;
+      border-radius: 8px;
       font-family: var(--mono);
       font-size: 0.75rem;
       font-weight: 400;
@@ -1624,6 +1664,30 @@
     .claim-download svg {
       width: 14px;
       height: 14px;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    .claim-preview-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .claim-preview-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .claim-preview-body::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .claim-preview-body::-webkit-scrollbar-thumb:hover {
+      background: var(--muted);
+    }
+
+    /* Firefox */
+    .claim-preview-body {
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
     }
 
     /* ===== FOCUS STYLES ===== */
@@ -1738,7 +1802,7 @@
   </div>
 
   <!-- PAGE CONTENT -->
-  <div class="page">
+  <main class="page">
 
     <div class="hero">
       <div class="hero-label">A Declaration of Digital Rights</div>
@@ -1782,11 +1846,11 @@
           <textarea class="mr-user-input" placeholder="Type something personal..." rows="2"></textarea>
         </div>
         <div class="mr-chat-bar">
-          <button class="mr-attach" aria-hidden="true">
+          <button class="mr-attach" tabindex="-1" aria-label="Attach file">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
           </button>
           <span class="mr-placeholder">Message AI...</span>
-          <button class="mr-send" aria-hidden="true">
+          <button class="mr-send" tabindex="-1" aria-label="Send message">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
           </button>
         </div>
@@ -2013,7 +2077,7 @@
       </footer>
 
     </div>
-  </div>
+  </main>
 
   <!-- MEMORY REVEAL: TYPING ENGINE + STREAM + COUNTER -->
   <script>
