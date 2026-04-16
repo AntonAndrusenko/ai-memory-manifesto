@@ -780,7 +780,8 @@
       line-height: 1.6;
       color: var(--text);
       position: relative;
-      min-height: 1.6em;
+      min-height: 3.2em;
+      transition: min-height 0.3s ease;
     }
 
     .mr-msg-area .mr-highlight {
@@ -909,40 +910,16 @@
     /* Fragment stream */
     .mr-stream {
       width: 100%;
-      max-width: 600px;
-      height: 180px;
+      max-width: 680px;
+      height: 200px;
       position: relative;
-      overflow-x: visible;
-      overflow-y: clip;
       margin-bottom: 16px;
     }
 
-    .mr-pill {
-      position: absolute;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--accent);
-      background: #2a2833;
-      border: 1px solid rgba(232, 101, 74, 0.35);
-      border-radius: 4px;
-      padding: 3px 10px;
-      white-space: nowrap;
-      box-shadow: 0 0 12px var(--accent-glow);
-      opacity: 0;
-      animation: mrDrift 3s ease-in forwards;
-      pointer-events: none;
-    }
-
-    [data-theme="light"] .mr-pill {
-      background: #edeae5;
-      border-color: rgba(181, 57, 33, 0.35);
-    }
-
-    @keyframes mrDrift {
-      0%   { opacity: 0; transform: translateY(0); }
-      10%  { opacity: 0.9; }
-      80%  { opacity: 0.6; }
-      100% { opacity: 0; transform: translateY(160px); }
+    .mr-stream canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     /* Fork */
@@ -1204,7 +1181,7 @@
       }
 
       .mr-stream {
-        max-width: 340px;
+        max-width: 100%;
       }
     }
 
@@ -1369,7 +1346,7 @@
 
     <!-- Fragment Stream -->
     <div class="mr-stream reveal">
-      <!-- Pills injected by JS -->
+      <canvas id="mr-dataflow"></canvas>
     </div>
 
     <!-- Fork point -->
@@ -1685,38 +1662,9 @@
         }, holdTime);
       }
 
-      var bonusPills = [
-        'preference: dark mode', 'tone: vulnerable', 'context: seeking help',
-        'trust: high openness', 'pattern: late night', 'mood: anxious',
-        'goal: clarity', 'need: emotional support', 'topic: career',
-        'behavior: oversharing', 'frequency: daily user', 'style: long messages'
-      ];
-      var bonusIdx = 0;
-
-      function emitPills(msg) {
-        var stream = document.querySelector('.mr-stream');
-        if (!stream) return;
-
-        var allPills = msg.highlights.map(function (h) {
-          return h.label + ': ' + h.phrase.split(' ').slice(0, 3).join(' ');
-        });
-        // Add 2-3 bonus inferred pills per message
-        for (var b = 0; b < 2 + Math.floor(Math.random() * 2); b++) {
-          allPills.push(bonusPills[bonusIdx % bonusPills.length]);
-          bonusIdx++;
-        }
-
-        allPills.forEach(function (text, i) {
-          setTimeout(function () {
-            var pill = document.createElement('span');
-            pill.className = 'mr-pill';
-            pill.textContent = text;
-            pill.style.left = (10 + Math.random() * 75) + '%';
-            pill.style.top = '0px';
-            stream.appendChild(pill);
-            pill.addEventListener('animationend', function () { pill.remove(); });
-          }, i * 200);
-        });
+      function emitPills() {
+        // Trigger a burst in the dataflow canvas
+        if (window.mrDataflowBurst) window.mrDataflowBurst();
       }
 
       var chatEl = document.querySelector('.mr-chat');
@@ -1734,25 +1682,137 @@
       if (chatEl) observer.observe(chatEl);
     })();
 
-    // ===== MEMORY REVEAL: MOUSE PARALLAX =====
+    // ===== MEMORY REVEAL: ASCII DATAFLOW CANVAS =====
     (function () {
-      var stream = document.querySelector('.mr-stream');
-      if (!stream) return;
+      var canvas = document.getElementById('mr-dataflow');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
 
-      var ticking = false;
-      stream.addEventListener('mousemove', function (e) {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(function () {
-          var rect = stream.getBoundingClientRect();
-          var offsetX = (e.clientX - rect.left - rect.width / 2) / rect.width;
-          var pills = stream.querySelectorAll('.mr-pill');
-          pills.forEach(function (pill) {
-            pill.style.marginLeft = (offsetX * 10) + 'px';
-          });
-          ticking = false;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var W, H, cols, colWidth;
+      var chars = 'MEMORY.RECALL.STORE.INFER.RETAIN.DELETE.EXPORT.KNOW.ACCESS.CONTROL.EMOTION.HEALTH.CAREER.FAMILY.IDEA.FEAR.GOAL.DREAM'.split('');
+      var drops = [];
+      var speeds = [];
+      var opacities = [];
+      var burstIntensity = 0;
+      var baseIntensity = 0.3;
+      var frameCount = 0;
+
+      function resize() {
+        var rect = canvas.parentElement.getBoundingClientRect();
+        W = rect.width;
+        H = rect.height;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        colWidth = 14;
+        cols = Math.floor(W / colWidth);
+        drops = [];
+        speeds = [];
+        opacities = [];
+        for (var i = 0; i < cols; i++) {
+          drops[i] = Math.random() * H * -1;
+          speeds[i] = 1.5 + Math.random() * 3;
+          opacities[i] = 0.15 + Math.random() * 0.35;
+        }
+      }
+
+      function getColors() {
+        var style = getComputedStyle(document.documentElement);
+        var accent = style.getPropertyValue('--accent').trim();
+        var dim = style.getPropertyValue('--dim').trim();
+        return { accent: accent, dim: dim };
+      }
+
+      // Burst triggers a wave of brighter, faster characters
+      window.mrDataflowBurst = function () {
+        burstIntensity = 1;
+      };
+
+      function draw() {
+        frameCount++;
+        if (frameCount % 2 !== 0) { requestAnimationFrame(draw); return; }
+
+        var colors = getColors();
+        var intensity = baseIntensity + burstIntensity * 0.7;
+
+        // Fade trail
+        ctx.clearRect(0, 0, W, H);
+
+        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+
+        for (var i = 0; i < cols; i++) {
+          // During burst, center columns are more active
+          var centerDist = Math.abs(i - cols / 2) / (cols / 2);
+          var colActivity = intensity * (1 - centerDist * 0.6);
+
+          // Skip some columns based on activity (sparser at edges)
+          if (Math.random() > colActivity + 0.1) continue;
+
+          var x = i * colWidth + colWidth / 2;
+          var y = drops[i];
+
+          // Character
+          var ch = chars[Math.floor(Math.random() * chars.length)];
+
+          // Opacity: brighter during burst, dimmer at edges
+          var alpha = opacities[i] * (0.4 + burstIntensity * 0.6) * (1 - centerDist * 0.3);
+
+          // Head character is brighter
+          ctx.fillStyle = colors.accent;
+          ctx.globalAlpha = Math.min(alpha * 1.5, 0.9);
+          ctx.fillText(ch, x, y);
+
+          // Trail characters (fading)
+          for (var t = 1; t < 4; t++) {
+            var trailY = y - t * 14;
+            if (trailY < 0) break;
+            ctx.globalAlpha = alpha * (1 - t * 0.3);
+            ctx.fillText(chars[Math.floor(Math.random() * chars.length)], x, trailY);
+          }
+
+          // Move drop
+          var speed = speeds[i] * (0.6 + burstIntensity * 0.8);
+          drops[i] += speed;
+
+          // Reset when off screen
+          if (drops[i] > H + 20) {
+            drops[i] = -10 - Math.random() * 40;
+            speeds[i] = 1.5 + Math.random() * 3;
+            opacities[i] = 0.15 + Math.random() * 0.35;
+          }
+        }
+
+        ctx.globalAlpha = 1;
+
+        // Decay burst
+        if (burstIntensity > 0) {
+          burstIntensity *= 0.97;
+          if (burstIntensity < 0.01) burstIntensity = 0;
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      window.addEventListener('resize', resize, { passive: true });
+
+      // Start when visible
+      var streamEl = canvas.parentElement;
+      var running = false;
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting && !running) {
+            running = true;
+            draw();
+          }
         });
-      }, { passive: true });
+      }, { threshold: 0.1 });
+      obs.observe(streamEl);
     })();
 
     // ===== MEMORY REVEAL: VAULT COUNTER =====
