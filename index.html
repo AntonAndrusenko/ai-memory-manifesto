@@ -936,12 +936,23 @@
       flex: 1;
       height: 1px;
       background: var(--border);
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .mr-fork.active .mr-fork-line {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    .mr-fork.active .mr-fork-chevron {
+      color: var(--accent);
     }
 
     .mr-fork-chevron {
       width: 20px;
       height: 20px;
       color: var(--dim);
+      transition: color 0.4s ease;
     }
 
     /* Split layout */
@@ -1121,6 +1132,17 @@
       background: var(--surface);
       border: 1px solid var(--border);
       overflow: hidden;
+    }
+
+    .mr-export.stale {
+      animation: mrStaleFlicker 0.6s ease;
+    }
+
+    @keyframes mrStaleFlicker {
+      0%   { opacity: 1; }
+      30%  { opacity: 0.4; }
+      60%  { opacity: 0.7; }
+      100% { opacity: 1; }
     }
 
     .mr-export-bar {
@@ -1463,7 +1485,7 @@
           <code>- Has a child</code>
           <code>- Interested in startups</code>
         </div>
-        <div class="mr-export-footer">3 items visible to you</div>
+        <div class="mr-export-footer">3 items visible to you &middot; Last updated: 47 days ago</div>
       </div>
       </div>
 
@@ -1709,6 +1731,12 @@
 
       function emitPills(msg) {
         if (window.mrDataflowState) window.mrDataflowState('sending');
+        // Pulse the fork
+        var fork = document.querySelector('.mr-fork');
+        if (fork) {
+          fork.classList.add('active');
+          setTimeout(function () { fork.classList.remove('active'); }, 1500);
+        }
         if (window.mrDataflowEmit && msg && msg.highlights) {
           var fragments = msg.highlights.map(function (h) {
             return h.label + ': ' + h.phrase;
@@ -1719,9 +1747,15 @@
           }
           window.mrDataflowEmit(fragments);
         }
-        // Reveal vault pills after fragments travel
+        // Reveal vault pills after fragments travel + flicker export
         setTimeout(function () {
           if (window.mrRevealVaultPills) window.mrRevealVaultPills(5);
+          var exportCard = document.querySelector('.mr-export');
+          if (exportCard) {
+            exportCard.classList.remove('stale');
+            void exportCard.offsetWidth;
+            exportCard.classList.add('stale');
+          }
         }, 1200);
       }
 
