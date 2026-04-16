@@ -2262,6 +2262,10 @@
         var text = userInput.value.trim();
         var highlights = analyzeUserText(text);
 
+        // Unpause canvas for the send animation
+        window.mrUserPaused = false;
+        if (vault) vault.style.animationPlayState = 'running';
+
         // Switch from textarea back to msg-area for highlight rendering
         chatBox.classList.remove('user-mode');
         showPlaceholder(false);
@@ -2319,24 +2323,60 @@
             chatBox.classList.add('user-mode');
             if (sendBtn) sendBtn.classList.remove('active');
             if (window.mrDataflowState) window.mrDataflowState('idle');
+            // Re-pause for user input
+            window.mrUserPaused = true;
+            if (vault) vault.style.animationPlayState = 'paused';
             userInput.focus();
           }, 400);
         }, holdTime);
       }
 
+      // Pause/resume API for canvas and vault pulse
+      var vault = document.querySelector('.mr-vault');
+
+      function enterUserMode() {
+        if (userMode) return;
+        userMode = true;
+        cycleId++;
+        chatBox.classList.add('user-mode');
+        msgArea.style.opacity = '1';
+        if (tryPrompt) tryPrompt.classList.remove('visible');
+        if (window.mrDataflowState) window.mrDataflowState('idle');
+        window.mrUserPaused = true;
+        if (vault) vault.style.animationPlayState = 'paused';
+        userInput.focus();
+      }
+
+      function exitUserMode() {
+        if (!userMode) return;
+        userMode = false;
+        chatBox.classList.remove('user-mode');
+        userInput.value = '';
+        if (sendBtn) sendBtn.classList.remove('active');
+        window.mrUserPaused = false;
+        if (vault) vault.style.animationPlayState = 'running';
+        if (window.mrDataflowState) window.mrDataflowState('idle');
+        showPlaceholder(true);
+        setTimeout(typeMessage, 600);
+      }
+
       // Click to activate user mode
       if (chatBox) {
         chatBox.addEventListener('click', function (e) {
-          if (userMode || e.target === sendBtn || sendBtn.contains(e.target)) return;
-          userMode = true;
-          cycleId++; // Invalidate all pending auto-cycle callbacks
-          chatBox.classList.add('user-mode');
-          msgArea.style.opacity = '1'; // Reset in case a fade was in progress
-          if (tryPrompt) tryPrompt.classList.remove('visible');
-          if (window.mrDataflowState) window.mrDataflowState('idle');
-          userInput.focus();
+          if (userMode) return;
+          if (e.target === sendBtn || sendBtn.contains(e.target)) return;
+          enterUserMode();
         });
       }
+
+      // Click outside to exit user mode and resume
+      document.addEventListener('click', function (e) {
+        if (!userMode) return;
+        var chatEl = document.querySelector('.mr-chat');
+        if (chatEl && !chatEl.contains(e.target)) {
+          exitUserMode();
+        }
+      });
 
       // Handle Enter to send
       if (userInput) {
@@ -2471,6 +2511,12 @@
       }
 
       function draw() {
+        // Pause when user is typing
+        if (window.mrUserPaused) {
+          requestAnimationFrame(draw);
+          return;
+        }
+
         // Smooth transitions
         currentAlpha += (targetAlpha - currentAlpha) * 0.04;
         currentSpeed += (targetSpeed - currentSpeed) * 0.04;
