@@ -2501,10 +2501,10 @@
       var currentDensity = 0;
 
       var states = {
-        idle:      { alpha: 0,   speed: 0.4, density: 0 },
-        typing:    { alpha: 0,   speed: 0.4, density: 0 },
-        analyzing: { alpha: 0,   speed: 0.4, density: 0 },
-        sending:   { alpha: 1.0, speed: 2.5, density: 1.0 }
+        idle:      { alpha: 0,    speed: 0.4, density: 0 },
+        typing:    { alpha: 0,    speed: 0.4, density: 0 },
+        analyzing: { alpha: 0.35, speed: 0.4, density: 0.5 },
+        sending:   { alpha: 1.0,  speed: 1.8, density: 1.0 }
       };
 
       window.mrDataflowState = function (s) {
@@ -2881,8 +2881,8 @@
           return;
         }
 
-        // Asymmetric easing: fast fade-in, slow fade-out
-        var lerpFactor = (targetAlpha > currentAlpha) ? 0.08 : 0.04;
+        // Asymmetric easing: fast fade-in, slow fade-out (linger)
+        var lerpFactor = (targetAlpha > currentAlpha) ? 0.08 : 0.03;
         currentAlpha += (targetAlpha - currentAlpha) * lerpFactor;
         currentSpeed += (targetSpeed - currentSpeed) * lerpFactor;
         currentDensity += (targetDensity - currentDensity) * lerpFactor;
