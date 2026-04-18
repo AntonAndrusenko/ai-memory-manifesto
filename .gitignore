@@ -6,5 +6,8 @@
 corrections/
 prompts/
 .playwright-mcp/
+.superpowers/
+.design-iterations/
 *.png
 !docs/screenshots/*.png
+!site/*.png
